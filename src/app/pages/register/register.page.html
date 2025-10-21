@@ -17,11 +17,13 @@
     </ion-item>
 
     <ion-item>
-      <ion-label>Rôle</ion-label>
-      <ion-select [(ngModel)]="role" name="role">
-        <ion-select-option value="user">Utilisateur</ion-select-option>
-        <ion-select-option value="owner">Propriétaire</ion-select-option>
-      </ion-select>
+      <ion-label position="floating">Nom complet</ion-label>
+      <ion-input type="text" [(ngModel)]="displayName" name="displayName"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Téléphone</ion-label>
+      <ion-input type="tel" [(ngModel)]="phone" name="phone"></ion-input>
     </ion-item>
 
     <ion-button expand="full" type="submit" [disabled]="f.invalid || loading">

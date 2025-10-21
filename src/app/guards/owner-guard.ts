@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { Auth } from '@angular/fire/auth';
-import { authState } from '@angular/fire/auth';
+import { Auth, authState } from '@angular/fire/auth';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
@@ -24,7 +23,7 @@ export class OwnerGuard implements CanActivate {
   async canActivate(): Promise<boolean | UrlTree> {
     try {
       // 1) attendre le premier état d'auth (user ou null)
-      const user = await firstValueFrom(authState(this.auth));
+  const user = await firstValueFrom(authState(this.auth));
       if (!user) {
         // pas connecté -> rediriger vers login en conservant la route demandée
         return this.router.createUrlTree(['/login'], { queryParams: { returnUrl: this.router.url }});
