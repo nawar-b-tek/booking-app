@@ -16,25 +16,25 @@ const routes: Routes = [
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
   {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
-    path: '', redirectTo: 'login', pathMatch: 'full'
-  },
-  {
     path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'register', loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
   },
-
-  // pages protégées (exemples)
   {
-    path: 'user/home', loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule)
+    path: 'admin-login', loadChildren: () => import('./pages/admin-login/admin-login.module').then(m => m.AdminLoginPageModule)
   },
   {
-    path: 'owner/home', loadChildren: () => import('./pages/owner/home/home.module').then(m => m.HomePageModule)
+    path: 'admin/home', loadChildren: () => import('./pages/admin-home/admin-home.module').then(m => m.AdminHomePageModule)
+  },
+
+  // pages protégées (exemples)
+  // Use the main home module for both roles unless you create separate modules
+  {
+    path: 'user/home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'owner/home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
 
 ];
