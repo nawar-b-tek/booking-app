@@ -10,6 +10,12 @@ import {
   updateProfile
 } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updateEmail as firebaseUpdateEmail,
+  updatePassword as firebaseUpdatePassword
+} from 'firebase/auth';
 import { BehaviorSubject, Observable, from, of, firstValueFrom } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -97,6 +103,27 @@ export class AuthService {
     return this.currentUser;
   }
 
+  public async reauthenticate(currentPassword: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user || !user.email) {
+      throw new Error('Impossible de vérifier l’utilisateur actuel.');
+    }
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+  }
+
+  public async updateEmailAddress(newEmail: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) throw new Error('Aucun utilisateur connecté');
+    await firebaseUpdateEmail(user, newEmail);
+  }
+
+  public async updateUserPassword(newPassword: string): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) throw new Error('Aucun utilisateur connecté');
+    await firebaseUpdatePassword(user, newPassword);
+  }
+
   public async getRole(uid: string): Promise<AppRole> {
     try {
       const snapshot = await getDoc(doc(this.firestore, `users/${uid}`));
@@ -107,6 +134,16 @@ export class AuthService {
       console.error('getRole error', err);
       return null;
     }
+  }
+
+  public async getUserProfileData(uid: string): Promise<Record<string, unknown> | null> {
+    const snapshot = await getDoc(doc(this.firestore, `users/${uid}`));
+    return snapshot.exists() ? snapshot.data() ?? null : null;
+  }
+
+  public async updateUserProfileDoc(uid: string, data: Record<string, unknown>): Promise<void> {
+    const docRef = doc(this.firestore, `users/${uid}`);
+    await setDoc(docRef, data, { merge: true });
   }
 
   public async refreshRoleFromServer(): Promise<void> {

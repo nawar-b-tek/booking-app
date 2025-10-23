@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from './guards/auth.guard';
+
 const routes: Routes = [
   // autres routes existantes (home, login, register, etc.)
   {
@@ -29,6 +31,13 @@ const routes: Routes = [
         loadChildren: () => import('./admin/admin-users/admin-users.module').then(m => m.AdminUsersPageModule)
       }
     ]
+  {
+    path: 'account',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./pages/user-account/user-account.module').then(m => m.UserAccountPageModule)
+  },
+  {
+    path: 'admin/home', loadChildren: () => import('./pages/admin-home/admin-home.module').then(m => m.AdminHomePageModule)
   },
 
   // fallback / redirect
