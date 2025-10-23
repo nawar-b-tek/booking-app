@@ -40,6 +40,9 @@ const routes: Routes = [
   {
     path: 'admin/home', loadChildren: () => import('./pages/admin-home/admin-home.module').then(m => m.AdminHomePageModule)
   },
+  {
+    path: 'admin-login', loadChildren: () => import('./pages/admin-login/admin-login.module').then(m => m.AdminLoginPageModule)
+  },
 
   // fallback / redirect
   {

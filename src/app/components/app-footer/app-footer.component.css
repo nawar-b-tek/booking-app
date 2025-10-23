@@ -1,6 +1,19 @@
+:host {
+  display: block;
+}
+
 .app-footer {
-  background-color: #f8f9fa !important;
-  border-top: 1px solid #ddd;
+  background: transparent;
+}
+
+.app-footer ion-toolbar {
+  --background: #0f172a; /* match toolbar */
+  --color: #f8fafc;      /* match toolbar */
+  --border-style: solid;
+  --border-color: rgba(148, 163, 184, 0.25);
+  --border-width: 1px 0 0 0;
+  --padding-start: 16px;
+  --padding-end: 16px;
 }
 
 .footer-content {
@@ -13,8 +26,9 @@
 .footer-title {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #f8fafc;
   margin: 0;
+  text-align: center;
 }
 
 .footer-links {
@@ -23,13 +37,13 @@
 
 .footer-links a {
   font-size: 13px;
-  color: #007bff;
+  color: #93c5fd; /* light blue */
   text-decoration: none;
   margin: 0 8px;
   transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
-  color: #0056b3;
+  color: #60a5fa;
   text-decoration: underline;
 }
