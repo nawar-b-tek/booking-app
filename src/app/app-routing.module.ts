@@ -55,40 +55,26 @@ const routes: Routes = [
 
   // fallback / redirect
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
-  {
-<<<<<<< HEAD
-    path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
     path: 'user/home',
     loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule)
-    
   },
   {
     path: 'owner/home',
     loadChildren: () => import('./pages/owner/home/home.module').then(m => m.HomePageModule)
   },
-
   {
     path: 'post-ad',
     loadComponent: () => import('./pages/post-ad/post-ad.page').then(m => m.PostAdPage)
   },
-  { path: '**', redirectTo: 'login' }
-
-=======
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
     path: '**',
     redirectTo: 'home'
   }
->>>>>>> 3dae328684e8bd4c461d5f7cfb7043afc6f09b68
 ];
 
 @NgModule({

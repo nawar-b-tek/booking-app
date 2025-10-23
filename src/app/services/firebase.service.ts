@@ -1,25 +1,28 @@
-// src/app/services/firebase.service.ts
 import { Injectable } from '@angular/core';
-import { initializeApp } from 'firebase/app';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
-  private app = initializeApp(environment.firebase);
+  private app = getApps().length ? getApp() : initializeApp(environment.firebase);
   private storage = getStorage(this.app);
   private firestore = getFirestore(this.app);
 
   private dataURLtoBlob(dataUrl: string): Blob {
-    const arr = dataUrl.split(',');
-    const mimeMatch = arr[0].match(/:(.*?);/);
+    const parts = dataUrl.split(',');
+    const mimeMatch = parts[0].match(/:(.*?);/);
     const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new Blob([u8arr], { type: mime });
+    const binary = atob(parts[1]);
+    const bytes = new Uint8Array(binary.length);
+
+    for (let i = 0; i < binary.length; i += 1) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return new Blob([bytes], { type: mime });
   }
 
   async uploadImageDataUrl(dataUrl: string, userId = 'anon'): Promise<string> {
@@ -28,8 +31,7 @@ export class FirebaseService {
     const path = `ads/${userId}/${timestamp}.jpg`;
     const storageRef = ref(this.storage, path);
     const snapshot = await uploadBytes(storageRef, blob);
-    const downloadUrl = await getDownloadURL(snapshot.ref);
-    return downloadUrl;
+    return getDownloadURL(snapshot.ref);
   }
 
   async createAd(adPayload: {
@@ -38,25 +40,24 @@ export class FirebaseService {
     price: number;
     latitude?: number;
     longitude?: number;
-    photosDataUrl?: string[]; // DataURL strings
+    photosDataUrl?: string[];
     userId?: string;
   }) {
     const { photosDataUrl = [], userId = 'anon', ...meta } = adPayload;
 
-    // Upload images (en parallèle)
-    const uploadPromises = photosDataUrl.map(d => this.uploadImageDataUrl(d, userId));
-    const photosUrls = await Promise.all(uploadPromises);
+    const photosUrls = await Promise.all(
+      photosDataUrl.map((dataUrl) => this.uploadImageDataUrl(dataUrl, userId))
+    );
 
-    // Créer le document Firestore
     const doc = {
       ...meta,
       photos: photosUrls,
       userId,
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
     };
 
-    const adsCol = collection(this.firestore, 'annonces'); // ta collection s'appelle 'annonces' d'après ton screenshot
-    const docRef = await addDoc(adsCol, doc);
+    const adsCollection = collection(this.firestore, 'annonces');
+    const docRef = await addDoc(adsCollection, doc);
     return { id: docRef.id, ...doc };
   }
 }

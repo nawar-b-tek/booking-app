@@ -11,10 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-<<<<<<< HEAD
 import { provideStorage, getStorage } from '@angular/fire/storage';
-=======
->>>>>>> 3dae328684e8bd4c461d5f7cfb7043afc6f09b68
 import { environment } from '../environments/environment';
 
 @NgModule({

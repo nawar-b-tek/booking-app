@@ -1,65 +1,63 @@
 <ion-header translucent="true">
   <ion-toolbar color="primary">
-    <ion-title>Poster une annonce</ion-title>
+    <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+    <ion-title>Post an Ad</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-
   <form [formGroup]="adForm" (ngSubmit)="submitAd()">
-
-    <!-- Titre de l'annonce -->
     <ion-item>
-      <ion-label position="stacked">Titre</ion-label>
-      <ion-input type="text" formControlName="title" placeholder="Titre de votre annonce"></ion-input>
+      <ion-label position="stacked">Title</ion-label>
+      <ion-input type="text" formControlName="title" placeholder="Ad title"></ion-input>
     </ion-item>
 
-    <!-- Numéro de téléphone -->
     <ion-item>
-      <ion-label position="stacked">Téléphone</ion-label>
+      <ion-label position="stacked">Phone</ion-label>
       <ion-input type="tel" formControlName="phone" placeholder="Ex: +216 9XX XXX XXX"></ion-input>
     </ion-item>
 
-    <!-- Prix par jour -->
     <ion-item>
-      <ion-label position="stacked">Prix / jour</ion-label>
-      <ion-input type="number" formControlName="price" placeholder="Prix en DT"></ion-input>
+      <ion-label position="stacked">Price / day</ion-label>
+      <ion-input type="number" formControlName="price" placeholder="Daily price in DT"></ion-input>
     </ion-item>
 
-    <!-- Bouton géolocalisation -->
     <ion-item>
-      <ion-label>Localisation actuelle</ion-label>
-      <ion-button slot="end" type="button" (click)="getCurrentLocation()">Obtenir</ion-button>
+      <ion-label>Current location</ion-label>
+      <ion-button slot="end" type="button" (click)="getCurrentLocation()">
+        <ion-icon slot="start" name="locate-outline"></ion-icon>
+        Fetch
+      </ion-button>
     </ion-item>
 
     <ion-item *ngIf="latitude && longitude">
-      Latitude: {{latitude}}, Longitude: {{longitude}}
+      Latitude: {{ latitude }}, Longitude: {{ longitude }}
     </ion-item>
+
     <ion-item>
       <ion-label position="stacked">Description</ion-label>
       <ion-textarea
         formControlName="description"
-        placeholder="Décrivez votre bien, ses caractéristiques..."
-        rows="5">
-      </ion-textarea>
-    </ion-item>
-  
-    <!-- Bouton ajouter photo -->
-    <ion-item>
-      <ion-label>Photos</ion-label>
-      <ion-button slot="end" type="button" (click)="takePhoto()">Ajouter photo</ion-button>
+        placeholder="Describe your property and key features"
+        rows="5"
+      ></ion-textarea>
     </ion-item>
 
-    <!-- Affichage des photos -->
+    <ion-item>
+      <ion-label>Photos</ion-label>
+      <ion-button slot="end" type="button" (click)="takePhoto()">
+        <ion-icon slot="start" name="camera-outline"></ion-icon>
+        Add photo
+      </ion-button>
+    </ion-item>
+
     <div *ngIf="photos.length > 0" class="photo-preview">
       <ion-img *ngFor="let p of photos" [src]="p"></ion-img>
     </div>
 
-    <!-- Bouton Poster -->
     <ion-button expand="full" type="submit" [disabled]="adForm.invalid" class="ion-margin-top">
-      Poster l'annonce
+      <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+      Post ad
     </ion-button>
-
   </form>
-
 </ion-content>

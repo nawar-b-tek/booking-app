@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router'; // <-- ajouté
+import { IonicModule } from '@ionic/angular';
 
 Chart.register(...registerables);
 
@@ -10,6 +12,8 @@ Chart.register(...registerables);
   selector: 'app-admin-home',
   templateUrl: './admin-home.page.html',
   styleUrls: ['./admin-home.page.scss'],
+  standalone: true,
+  imports: [IonicModule, CommonModule],
 })
 export class AdminHomePage implements OnInit, OnDestroy {
   totalAds = 0;
@@ -17,80 +21,60 @@ export class AdminHomePage implements OnInit, OnDestroy {
   totalUsers = 0;
   bookedPercentage = 0;
 
-  private adsSub: Subscription | null = null;
-  private usersSub: Subscription | null = null;
-  private lineChart: any = null;
+  private adsSub?: Subscription;
+  private usersSub?: Subscription;
+  private lineChart?: Chart;
 
-  // inject Router pour la navigation
   constructor(private firestore: Firestore, private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadStatistics();
   }
 
-  ngOnDestroy() {
-    if (this.adsSub) this.adsSub.unsubscribe();
-    if (this.usersSub) this.usersSub.unsubscribe();
-    if (this.lineChart) {
-      try { this.lineChart.destroy(); } catch (e) { console.warn('chart destroy error', e); }
-    }
+  ngOnDestroy(): void {
+    this.adsSub?.unsubscribe();
+    this.usersSub?.unsubscribe();
+    this.lineChart?.destroy();
   }
 
   goTo(page: string) {
-  if (page === 'users') {
-    // navigation ABSOLUE vers /admin/admin-users
-    this.router.navigateByUrl('/admin/admin-users');
-  } else if (page === 'announcements') {
-    // exemple : page interne ou externe
-    this.router.navigateByUrl('/admin/home/announcements'); // à adapter
-  } else if (page === 'reservations') {
-    this.router.navigateByUrl('/admin/home/reservations'); // à adapter
+    switch (page) {
+      case 'users':
+        this.router.navigateByUrl('/admin/admin-users');
+        break;
+      case 'announcements':
+        this.router.navigateByUrl('/admin/home/announcements');
+        break;
+      case 'reservations':
+        this.router.navigateByUrl('/admin/home/reservations');
+        break;
+      default:
+        break;
+    }
   }
-}
-
-
 
   async loadStatistics() {
-    const annoncesRef = collection(this.firestore, 'annonces');
-    const usersRef = collection(this.firestore, 'users');
+    const adsCollection = collection(this.firestore, 'annonces');
+    const usersCollection = collection(this.firestore, 'users');
 
-    // --- SUBSCRIBE annonces (live)
-    this.adsSub = collectionData(annoncesRef, { idField: 'id' })
-      .subscribe((ads: any[]) => {
-        console.log('[subscribe] annonces reçues:', ads);
-        this.totalAds = Array.isArray(ads) ? ads.length : 0;
+    this.adsSub = collectionData(adsCollection, { idField: 'id' }).subscribe((ads: any[]) => {
+      console.log('Fetched ads:', ads);
+      this.totalAds = Array.isArray(ads) ? ads.length : 0;
+      this.bookedAds = ads.filter((ad) => ad?.isBooked === true).length;
+      this.bookedPercentage = this.totalAds > 0 ? Math.round((this.bookedAds / this.totalAds) * 100) : 0;
 
-        // Debug : afficher les valeurs distinctes de isBooked
-        const bookedCounts = new Map<string, number>();
-        ads.forEach(a => {
-          const v = a && a.isBooked !== undefined ? String(a.isBooked) : '<<missing>>';
-          bookedCounts.set(v, (bookedCounts.get(v) || 0) + 1);
-        });
-        console.log('Distinct isBooked values:', Array.from(bookedCounts.entries()));
+      this.createLineChart();
+    });
 
-        // Comptage des annonces réservées
-        this.bookedAds = ads.filter(a => a && a.isBooked === true).length;
-
-        // Pourcentage
-        this.bookedPercentage = this.totalAds > 0
-          ? Math.round((this.bookedAds / this.totalAds) * 100)
-          : 0;
-
-        this.createLineChart();
-      });
-
-    // --- SUBSCRIBE users (live)
-    this.usersSub = collectionData(usersRef, { idField: 'id' })
-      .subscribe((users: any[]) => {
-        console.log('[subscribe] users reçus:', users);
-        this.totalUsers = Array.isArray(users) ? users.length : 0;
-      });
+    this.usersSub = collectionData(usersCollection, { idField: 'id' }).subscribe((users: any[]) => {
+      console.log('Fetched users:', users);
+      this.totalUsers = Array.isArray(users) ? users.length : 0;
+    });
   }
 
   createLineChart() {
     if (this.lineChart) {
-      try { this.lineChart.destroy(); } catch (e) { console.warn('destroy chart err', e); }
-      this.lineChart = null;
+      this.lineChart.destroy();
     }
 
     this.lineChart = new Chart('lineChart', {
@@ -104,19 +88,19 @@ export class AdminHomePage implements OnInit, OnDestroy {
             borderColor: '#129cbeff',
             backgroundColor: 'rgba(23,162,184,0.2)',
             fill: true,
-            tension: 0.3
-          }
-        ]
+            tension: 0.3,
+          },
+        ],
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { display: true, position: 'bottom' }
+          legend: { display: true, position: 'bottom' },
         },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1 } }
-        }
-      }
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+        },
+      },
     });
   }
 

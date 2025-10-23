@@ -5,7 +5,11 @@ describe('PostAdPage', () => {
   let component: PostAdPage;
   let fixture: ComponentFixture<PostAdPage>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PostAdPage],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(PostAdPage);
     component = fixture.componentInstance;
     fixture.detectChanges();

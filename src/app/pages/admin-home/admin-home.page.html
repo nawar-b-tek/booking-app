@@ -1,42 +1,36 @@
-<div class="dashboard-container">
-  <h2 class="dashboard-title">Dashboard</h2>
-  <p class="dashboard-subtitle"></p>
-
-<<<<<<< HEAD
 <ion-content class="ion-padding">
-  <p>Admin dashboard placeholder.</p>
-</ion-content>
+  <div class="dashboard-container">
+    <h2 class="dashboard-title">Dashboard</h2>
+    <p class="dashboard-subtitle">Overview of ads, reservations, and users</p>
 
-=======
-  <div class="stats-grid">
-  <div class="card green" (click)="goTo('announcements')">
-    <h3>{{ totalAds }}</h3>
-    <p>announcements</p>
-  </div>
+    <div class="stats-grid">
+      <div class="card green" role="button" tabindex="0" (click)="goTo('announcements')">
+        <h3>{{ totalAds }}</h3>
+        <p>Announcements</p>
+      </div>
 
-  <div class="card blue" (click)="goTo('reservations')">
-    <h3>{{ bookedAds }}</h3>
-    <p>reservations</p>
-  </div>
+      <div class="card blue" role="button" tabindex="0" (click)="goTo('reservations')">
+        <h3>{{ bookedAds }}</h3>
+        <p>Reservations</p>
+      </div>
 
-  <div class="card red" (click)="goTo('users')">
-    <h3>{{ totalUsers }}</h3>
-    <p>Users</p>
-  </div>
-</div>
-
-
-  <div class="progress-section">
-    <div class="progress-card">
-      <p>Reservation rate</p>
-      <div class="circle" [style.background]="getProgressGradient(bookedPercentage)">
-        {{ bookedPercentage }}%
+      <div class="card red" role="button" tabindex="0" (click)="goTo('users')">
+        <h3>{{ totalUsers }}</h3>
+        <p>Users</p>
       </div>
     </div>
-  </div>
 
-  <div class="chart-container">
-    <canvas id="lineChart"></canvas>
+    <div class="progress-section">
+      <div class="progress-card">
+        <p>Reservation rate</p>
+        <div class="circle" [style.background]="getProgressGradient(bookedPercentage)">
+          {{ bookedPercentage }}%
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="lineChart"></canvas>
+    </div>
   </div>
-</div>
->>>>>>> 3dae328684e8bd4c461d5f7cfb7043afc6f09b68
+</ion-content>
