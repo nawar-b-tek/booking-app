@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
+import { AdminHomePage } from './admin-home.page';
 import { IonicModule } from '@ionic/angular';
 
-import { AdminHomePageRoutingModule } from './admin-home-routing.module';
-import { AdminHomePage } from './admin-home.page';
+const routes: Routes = [
+  {
+    path: '',
+    component: AdminHomePage, 
+  },
+  { path: 'users',         loadChildren: () => import('../../admin/admin-users/admin-users.module').then(m => m.AdminUsersPageModule) },
+];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, AdminHomePageRoutingModule],
-  declarations: [AdminHomePage],
+  imports: [RouterModule.forChild(routes),IonicModule,],
 })
 export class AdminHomePageModule {}

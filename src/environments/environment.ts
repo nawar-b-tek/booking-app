@@ -1,5 +1,3 @@
-// Import the functions you need from the SDKs you need
-// Your web app's Firebase configuration
 export const firebaseConfig = {
   apiKey: "AIzaSyD2DShi8NgeNUyeXA8fp1s_TniHeISHDd4",
   authDomain: "ionic-df633.firebaseapp.com",

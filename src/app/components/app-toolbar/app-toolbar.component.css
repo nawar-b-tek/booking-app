@@ -1,0 +1,63 @@
+ion-toolbar {
+  --background: #ffffff;
+  --min-height: 88px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+ion-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-logo {
+  height: 60px;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+ion-buttons[slot="end"] ion-button {
+  font-size: 0.95rem;
+  font-weight: 500;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+ion-icon {
+  font-size: 22px;
+}
+
+/* ✅ Icône de notification seule avec badge */
+.notification-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.notification-icon {
+  font-size: 26px;
+  color: #222;
+}
+
+.notification-wrapper:hover .notification-icon {
+  color: #007bff;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0px;
+  right: 4px;
+  background-color: #e63946; /* rouge vif */
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid white;
+}

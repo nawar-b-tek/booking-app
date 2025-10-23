@@ -1,0 +1,28 @@
+/* admin-users.page.scss */
+
+/* Ajuste l'aire de contenu pour ne pas être cachée par header/footer */
+ion-content {
+  /* si tu utilises <ion-header> dans la page, la valeur 56px correspond
+     à la hauteur approximative d'une toolbar standard. Ajuste si besoin. */
+  --padding-top: calc(var(--ion-safe-area-top) + 56px);
+  --padding-bottom: calc(var(--ion-safe-area-bottom) + 56px);
+
+  /* s'assurer que la boîte de contenu tient compte du padding */
+  box-sizing: border-box;
+}
+
+/* Par sécurité si tu as un footer global fixe dans app.component,
+   on met un padding-bottom complémentaire sur la liste */
+ion-list {
+  padding-bottom: calc(8px + var(--ion-safe-area-bottom) + 56px);
+}
+
+/* Optionnel : si tu veux que l'ion-refresher reste visible et non couvert */
+ion-refresher {
+  margin-top: calc(var(--ion-safe-area-top) + 8px);
+}
+
+/* (Conserve le style précédent pour les items) */
+ion-item-sliding {
+  margin-bottom: 10px;
+}

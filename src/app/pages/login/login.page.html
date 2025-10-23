@@ -4,24 +4,28 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form (ngSubmit)="onLogin()" #f="ngForm">
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" required [(ngModel)]="email" name="email"></ion-input>
-    </ion-item>
+<ion-content fullscreen>
+  <div class="login-wrapper">
+    <div class="login-container">
+      <form (ngSubmit)="onLogin()" #f="ngForm">
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input type="email" required [(ngModel)]="email" name="email"></ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Mot de passe</ion-label>
-      <ion-input type="password" required [(ngModel)]="password" name="password"></ion-input>
-    </ion-item>
+        <ion-item>
+          <ion-label position="floating">Mot de passe</ion-label>
+          <ion-input type="password" required [(ngModel)]="password" name="password"></ion-input>
+        </ion-item>
 
-    <ion-button expand="full" type="submit" [disabled]="f.invalid || loading">
-      {{ loading ? 'Connexion...' : 'Se connecter' }}
-    </ion-button>
-  </form>
+        <ion-button expand="block" type="submit" [disabled]="f.invalid || loading">
+          {{ loading ? 'Connexion...' : 'Se connecter' }}
+        </ion-button>
+      </form>
 
-  <div class="ion-text-center" style="margin-top:12px;">
-    <a routerLink="/register">Pas encore de compte ? Inscription</a>
+      <div class="ion-text-center" style="margin-top:12px;">
+        <a routerLink="/register">Pas encore de compte ? Inscription</a>
+      </div>
+    </div>
   </div>
 </ion-content>
