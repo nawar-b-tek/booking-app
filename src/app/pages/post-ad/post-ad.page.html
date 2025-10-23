@@ -1,0 +1,63 @@
+<ion-header translucent="true">
+  <ion-toolbar color="primary">
+    <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+    <ion-title>Post an Ad</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="adForm" (ngSubmit)="submitAd()">
+    <ion-item>
+      <ion-label position="stacked">Title</ion-label>
+      <ion-input type="text" formControlName="title" placeholder="Ad title"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Phone</ion-label>
+      <ion-input type="tel" formControlName="phone" placeholder="Ex: +216 9XX XXX XXX"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Price / day</ion-label>
+      <ion-input type="number" formControlName="price" placeholder="Daily price in DT"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Current location</ion-label>
+      <ion-button slot="end" type="button" (click)="getCurrentLocation()">
+        <ion-icon slot="start" name="locate-outline"></ion-icon>
+        Fetch
+      </ion-button>
+    </ion-item>
+
+    <ion-item *ngIf="latitude && longitude">
+      Latitude: {{ latitude }}, Longitude: {{ longitude }}
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea
+        formControlName="description"
+        placeholder="Describe your property and key features"
+        rows="5"
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Photos</ion-label>
+      <ion-button slot="end" type="button" (click)="takePhoto()">
+        <ion-icon slot="start" name="camera-outline"></ion-icon>
+        Add photo
+      </ion-button>
+    </ion-item>
+
+    <div *ngIf="photos.length > 0" class="photo-preview">
+      <ion-img *ngFor="let p of photos" [src]="p"></ion-img>
+    </div>
+
+    <ion-button expand="full" type="submit" [disabled]="adForm.invalid" class="ion-margin-top">
+      <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+      Post ad
+    </ion-button>
+  </form>
+</ion-content>

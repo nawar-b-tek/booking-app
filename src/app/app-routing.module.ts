@@ -55,6 +55,18 @@ const routes: Routes = [
 
   // fallback / redirect
   {
+    path: 'user/home',
+    loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'owner/home',
+    loadChildren: () => import('./pages/owner/home/home.module').then(m => m.HomePageModule)
+  },
+  {
+    path: 'post-ad',
+    loadComponent: () => import('./pages/post-ad/post-ad.page').then(m => m.PostAdPage)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
