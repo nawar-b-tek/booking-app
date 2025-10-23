@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <!-- <ion-buttons slot="start">
+    <!-- <ion-buttons slot="start">
       <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons> -->
     </ion-buttons> -->
 
     <ion-title>
@@ -17,12 +19,22 @@
         src="assets/logo.png"
         (click)="goHome()"
       ></ion-icon> -->
+      />
+      <!-- <ion-icon
+        name="logo-ionic"
+        size="large"
+        src="assets/logo.png"
+        (click)="goHome()"
+      ></ion-icon> -->
     </ion-title>
 
     <ion-buttons slot="end">
       <!-- Connected user -->
+      <!-- Connected user -->
       <ng-container *ngIf="user$ | async as user; else guestTpl">
         <ng-container [ngSwitch]="user.role">
+          <!-- Admin specific actions -->
+          <ng-container *ngSwitchCase="'admin'">
           <!-- Admin specific actions -->
           <ng-container *ngSwitchCase="'admin'">
             <div class="notification-wrapper" (click)="goToNotifications()">
@@ -42,11 +54,21 @@
             </ion-button>
 
             <ion-button fill="clear" (click)="logout()">
+            <ion-button fill="clear" routerLink="/admin/home">
+              <ion-icon name="speedometer-outline" slot="start"></ion-icon>
+              <span class="toolbar-button-label">Dashboard</span>
+            </ion-button>
+
+            <ion-button fill="clear" (click)="logout()">
               <ion-icon name="log-out-outline" slot="start"></ion-icon>
+              <span class="toolbar-button-label"></span>
               <span class="toolbar-button-label"></span>
             </ion-button>
           </ng-container>
 
+          <!-- Default authenticated actions (user/owner/null) -->
+          <ng-container *ngSwitchDefault>
+              <div class="notification-wrapper" (click)="goToNotifications()">
           <!-- Default authenticated actions (user/owner/null) -->
           <ng-container *ngSwitchDefault>
               <div class="notification-wrapper" (click)="goToNotifications()">
@@ -80,6 +102,7 @@
         </ng-container>
       </ng-container>
 
+      <!-- Guest actions -->
       <!-- Guest actions -->
       <ng-template #guestTpl>
         <ion-button fill="clear" routerLink="/admin-login"><ion-icon name="man-outline"></ion-icon></ion-button>
