@@ -53,6 +53,7 @@
 /* rendre la carte cliquable */
 .card {
   cursor: pointer;                    /* main au survol */
+  -webkit-user-select: none;          /* Safari/iOS support */
   user-select: none;                  /* empêche la sélection de texte au clic */
   -webkit-tap-highlight-color: transparent; /* supprime le halo bleu sur mobile */
   transition: transform .12s ease, box-shadow .12s ease, opacity .08s ease;

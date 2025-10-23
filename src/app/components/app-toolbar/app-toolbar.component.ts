@@ -4,7 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
 import { Observable, combineLatest, map } from 'rxjs';
 import { AuthService, AppRole } from '../../services/auth.service';
-import type { User as FirebaseUser } from '@angular/fire/auth';
+
+type ToolbarRole = Exclude<AppRole, null>;
 
 @Component({
   selector: 'app-toolbar',
@@ -14,38 +15,40 @@ import type { User as FirebaseUser } from '@angular/fire/auth';
   styleUrls: ['./app-toolbar.component.css']
 })
 export class AppToolbarComponent {
-  // Observable unique combinant utilisateur Firebase + rôle
   user$: Observable<{
     name: string;
     email: string;
-    role: AppRole;
+    role: ToolbarRole;
     hasNotifications: boolean;
   } | null>;
 
   constructor(private auth: AuthService, private router: Router) {
     this.user$ = combineLatest([this.auth.authState$, this.auth.role$]).pipe(
       map(([fbUser, role]) => {
-        if (!fbUser) return null;
+        if (!fbUser) {
+          return null;
+        }
+
         return {
-          name: fbUser.displayName || (fbUser.email ? fbUser.email.split('@')[0] : 'Utilisateur'),
+          name: fbUser.displayName || (fbUser.email ? fbUser.email.split('@')[0] : 'User'),
           email: fbUser.email || '',
-          role: role,
-          hasNotifications: false // tu pourras relier à Firestore plus tard
+          role: (role ?? 'user') as ToolbarRole,
+          hasNotifications: false
         };
       })
     );
   }
 
-  async logout() {
+  async logout(): Promise<void> {
     await this.auth.logout();
     await this.router.navigate(['/']);
   }
 
-  goToNotifications() {
+  goToNotifications(): void {
     this.router.navigate(['/notifications']);
   }
-  goHome() {
-  this.router.navigate(['/home']); 
-}
 
+  goHome(): void {
+    this.router.navigate(['/home']);
+  }
 }
