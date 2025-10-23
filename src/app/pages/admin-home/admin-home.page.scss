@@ -1,6 +1,15 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .dashboard-container {
+  height: 100%;
   padding: 20px;
+  padding-bottom: calc(20px + var(--app-footer-height, 64px));
   text-align: center;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .dashboard-title {
