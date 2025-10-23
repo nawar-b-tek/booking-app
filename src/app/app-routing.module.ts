@@ -2,41 +2,45 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
+  // autres routes existantes (home, login, register, etc.)
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
+  },
+
+  // --- ADMIN area: home et admin-users en tant qu'entrées absolues
+  {
+    path: 'admin',
+    children: [
+      {
+        path: 'home',
+        loadChildren: () => import('./pages/admin-home/admin-home.module').then(m => m.AdminHomePageModule)
+      },
+      {
+        path: 'admin-users',
+        loadChildren: () => import('./admin/admin-users/admin-users.module').then(m => m.AdminUsersPageModule)
+      }
+    ]
+  },
+
+  // fallback / redirect
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
   },
   {
-    path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
-  },
-  {
-    path: 'register', loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
-  },
-  {
-    path: 'admin-login', loadChildren: () => import('./pages/admin-login/admin-login.module').then(m => m.AdminLoginPageModule)
-  },
-  {
-    path: 'admin/home', loadChildren: () => import('./pages/admin-home/admin-home.module').then(m => m.AdminHomePageModule)
-  },
-
-  // pages protégées (exemples)
-  // Use the main home module for both roles unless you create separate modules
-  {
-    path: 'user/home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-  },
-  {
-    path: 'owner/home', loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
-  },
-
+    path: '**',
+    redirectTo: 'home'
+  }
 ];
 
 @NgModule({
@@ -45,4 +49,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

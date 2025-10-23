@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons>
+
+    <ion-title>
+      <img
+        src="assets/logo.png"
+        alt="Logo"
+        class="app-logo"
+        (click)="goHome()"
+        style="cursor: pointer;"
+      />
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <!-- Utilisateur connecté -->
+      <ng-container *ngIf="user$ | async as user; else guestTpl">
+        <ng-container [ngSwitch]="user.role">
+
+          <!-- Utilisateur normal -->
+          <ng-container *ngSwitchCase="'user'">
+            <!-- Bouton Mes réservations -->
+            <ion-button routerLink="/reservations">
+              <ion-icon name="calendar-outline" slot="start"></ion-icon>
+             
+            </ion-button>
+
+            <!-- Bouton Profil utilisateur -->
+            <ion-button routerLink="/profile">
+              <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+              
+            </ion-button>
+
+            <!-- Icône de notification seule avec badge -->
+            <div class="notification-wrapper" (click)="goToNotifications()">
+              <ion-icon
+                name="notifications-outline"
+                class="notification-icon"
+              ></ion-icon>
+              <span
+                class="notification-badge"
+                *ngIf="user.hasNotifications"
+              ></span>
+            </div>
+
+            <!-- Bouton logout -->
+            <ion-button (click)="logout()">
+              <ion-icon name="log-out-outline" slot="start"></ion-icon>
+              Logout
+            </ion-button>
+          </ng-container>
+
+          <!-- Admin -->
+          <ng-container *ngSwitchCase="'admin'">
+            <div class="notification-wrapper" (click)="goToNotifications()">
+              <ion-icon
+                name="notifications-outline"
+                class="notification-icon"
+              ></ion-icon>
+              <span
+                class="notification-badge"
+                *ngIf="user.hasNotifications"
+              ></span>
+            </div>
+
+            <ion-button (click)="logout()">
+              <ion-icon name="log-out-outline" slot="start"></ion-icon>
+              Logout
+            </ion-button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- Non connecté -->
+      <ng-template #guestTpl>
+        <ion-button routerLink="/admin-login">Admin</ion-button>
+        <ion-button routerLink="/login">Login</ion-button>
+        <ion-button routerLink="/register">Register</ion-button>
+      </ng-template>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
