@@ -1,10 +1,42 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Admin Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="dashboard-container">
+  <h2 class="dashboard-title">Dashboard</h2>
+  <p class="dashboard-subtitle"></p>
 
+<<<<<<< HEAD
 <ion-content class="ion-padding">
   <p>Admin dashboard placeholder.</p>
 </ion-content>
 
+=======
+  <div class="stats-grid">
+  <div class="card green" (click)="goTo('announcements')">
+    <h3>{{ totalAds }}</h3>
+    <p>announcements</p>
+  </div>
+
+  <div class="card blue" (click)="goTo('reservations')">
+    <h3>{{ bookedAds }}</h3>
+    <p>reservations</p>
+  </div>
+
+  <div class="card red" (click)="goTo('users')">
+    <h3>{{ totalUsers }}</h3>
+    <p>Users</p>
+  </div>
+</div>
+
+
+  <div class="progress-section">
+    <div class="progress-card">
+      <p>Reservation rate</p>
+      <div class="circle" [style.background]="getProgressGradient(bookedPercentage)">
+        {{ bookedPercentage }}%
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="lineChart"></canvas>
+  </div>
+</div>
+>>>>>>> 3dae328684e8bd4c461d5f7cfb7043afc6f09b68

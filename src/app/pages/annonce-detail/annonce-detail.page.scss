@@ -1,0 +1,27 @@
+.photos {
+  .photos-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 12px;
+  }
+  img {
+    width: 260px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex: 0 0 auto;
+  }
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 16px;
+}
+
+.center-spinner {
+  display: block;
+  margin: 64px auto;
+}

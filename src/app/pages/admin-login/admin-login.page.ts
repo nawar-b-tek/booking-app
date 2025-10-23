@@ -6,7 +6,8 @@ import { ToastController } from '@ionic/angular';
 @Component({
   selector: 'app-admin-login',
   templateUrl: './admin-login.page.html',
-  standalone: false
+  standalone: false,
+  styleUrls: ['./admin-login.page.scss'],
 })
 export class AdminLoginPage {
   email = '';

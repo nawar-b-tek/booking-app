@@ -34,6 +34,44 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // annonces: public readable, owners can update their own docs
+    match /annonces/{annonceId} {
+      allow read: if true;
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() &&
+        request.auth.token.email != null &&
+        request.auth.token.email == resource.data.user_id;
+    }
+
+    // reservations: created by any authenticated user, readable by owner or renter,
+    // updatable (status changes) by owner or admin only
+    match /reservations/{resId} {
+      allow create: if isAuthenticated() &&
+        request.resource.data.ownerEmail is string &&
+        request.resource.data.renterEmail is string;
+
+      allow read: if isAuthenticated() && (
+        (request.auth.token.email == resource.data.ownerEmail) ||
+        (request.auth.token.email == resource.data.renterEmail) ||
+        isAdmin()
+      );
+
+      allow update: if isAuthenticated() && (
+        (request.auth.token.email == resource.data.ownerEmail) ||
+        isAdmin()
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // notifications: readable by recipient, writable by authenticated
+    match /notifications/{notifId} {
+      allow create: if isAuthenticated();
+      allow read: if isAuthenticated() && request.auth.token.email == resource.data.toEmail;
+      allow update: if isAuthenticated() && request.auth.token.email == resource.data.toEmail;
+      allow delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

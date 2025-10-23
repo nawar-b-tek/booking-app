@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Réservations</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="incoming">
+      <ion-label>À traiter</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="mine">
+      <ion-label>Mes demandes</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ng-container *ngIf="segment === 'incoming'">
+    <ion-list *ngIf="incoming$ | async as incoming; else emptyIncoming">
+      <ion-item *ngFor="let r of incoming">
+        <ion-label>
+          <div><strong>{{ r.annonceTitle }}</strong></div>
+          <div>Du {{ r.startDate | date }} au {{ r.endDate | date }}</div>
+          <div>Total: {{ r.totalPrice }} {{ r.currency || 'TND' }}</div>
+          <div>De: {{ r.renterEmail }}</div>
+          <div>Status: {{ r.status }}</div>
+        </ion-label>
+        <ion-button color="success" size="small" (click)="approve(r)" [disabled]="r.status !== 'pending'">Approuver</ion-button>
+        <ion-button color="danger" size="small" (click)="deny(r)" [disabled]="r.status !== 'pending'">Refuser</ion-button>
+      </ion-item>
+    </ion-list>
+    <ng-template #emptyIncoming>
+      <ion-text color="medium">
+        <p class="empty">Aucune réservation à traiter</p>
+      </ion-text>
+    </ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="segment === 'mine'">
+    <ion-list *ngIf="mine$ | async as mine; else emptyMine">
+      <ion-item *ngFor="let r of mine">
+        <ion-label>
+          <div><strong>{{ r.annonceTitle }}</strong></div>
+          <div>Du {{ r.startDate | date }} au {{ r.endDate | date }}</div>
+          <div>Total: {{ r.totalPrice }} {{ r.currency || 'TND' }}</div>
+          <div>Propriétaire: {{ r.ownerEmail }}</div>
+          <div>Status: {{ r.status }}</div>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ng-template #emptyMine>
+      <ion-text color="medium">
+        <p class="empty">Aucune réservation envoyée</p>
+      </ion-text>
+    </ng-template>
+  </ng-container>
+</ion-content>
+

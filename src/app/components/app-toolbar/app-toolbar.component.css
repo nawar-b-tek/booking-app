@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+ion-toolbar {
+  --background: #0f172a;
+  --color: #f8fafc;
+  --min-height: 88px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+ion-toolbar ion-menu-button {
+  color: inherit;
+}
+
+
+
+ion-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app-logo {
+  height: 40px;
+  object-fit: contain;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+img  {
+  color: white;
+  width: 24px;
+  height: 24px;
+}
+
+ion-buttons[slot="end"] ion-button {
+  font-size: 0.95rem;
+  font-weight: 500;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --color: #f8fafc;
+  --color-focused: #f8fafc;
+  --color-hover: #f8fafc;
+  --color-activated: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+ion-buttons[slot="end"] ion-button::part(native) {
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: transparent;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+ion-buttons[slot="end"] ion-button:hover::part(native) {
+  border-color: rgba(148, 163, 184, 0.45);
+  background-color: rgba(148, 163, 184, 0.12);
+}
+
+.toolbar-button-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+ion-icon {
+  font-size: 22px;
+  color: inherit;
+}
+
+/* Notification icon with badge */
+.notification-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.notification-icon {
+  font-size: 26px;
+}
+
+.notification-wrapper:hover {
+  color: #60a5fa;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 0px;
+  right: 4px;
+  background-color: #e63946;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ffffff;
+}

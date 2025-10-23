@@ -1,3 +1,9 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <div class="app-shell">
+    <app-toolbar class="app-shell__header"></app-toolbar>
+    <main class="app-shell__content">
+      <ion-router-outlet></ion-router-outlet>
+    </main>
+    <app-footer class="app-shell__footer"></app-footer>
+  </div>
 </ion-app>

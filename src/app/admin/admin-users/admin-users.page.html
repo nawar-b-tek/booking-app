@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Users</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addUser()">Add</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngFor="let u of users$ | async">
+      <ion-item>
+        <ion-avatar slot="start" *ngIf="u.photoURL">
+          <img [src]="u.photoURL" />
+        </ion-avatar>
+
+        <ion-label>
+          <h2>{{ u.displayName || u.name || 'Sans nom' }}</h2>
+          <p>{{ u.email || '—' }}</p>
+          <p>Téléphone: {{ u.phone || '—' }} — Rôle: {{ u.role || '—' }}</p>
+          <p>Créé le: {{ u.createdAtStr }}</p>
+          <small>ID: {{ u.id }}</small>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="editUser(u)">Modifier</ion-item-option>
+        <ion-item-option color="danger" (click)="deleteUser(u.id)">Supprimer</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-refresher slot="fixed" (ionRefresh)="$event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+</ion-content>

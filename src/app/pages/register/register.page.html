@@ -1,37 +1,41 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Inscription</ion-title>
+    <ion-title>Sign Up</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form (ngSubmit)="onRegister()" #f="ngForm">
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" required [(ngModel)]="email" name="email"></ion-input>
-    </ion-item>
+<ion-content fullscreen>
+  <div class="register-wrapper">
+    <div class="register-container">
+      <form (ngSubmit)="onRegister()" #f="ngForm">
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input type="email" required [(ngModel)]="email" name="email"></ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Mot de passe</ion-label>
-      <ion-input type="password" required minlength="6" [(ngModel)]="password" name="password"></ion-input>
-    </ion-item>
+        <ion-item>
+          <ion-label position="floating">Password</ion-label>
+          <ion-input type="password" required minlength="6" [(ngModel)]="password" name="password"></ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Nom complet</ion-label>
-      <ion-input type="text" [(ngModel)]="displayName" name="displayName"></ion-input>
-    </ion-item>
+        <ion-item>
+          <ion-label position="floating">Full Name</ion-label>
+          <ion-input type="text" [(ngModel)]="displayName" name="displayName"></ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Téléphone</ion-label>
-      <ion-input type="tel" [(ngModel)]="phone" name="phone"></ion-input>
-    </ion-item>
+        <ion-item>
+          <ion-label position="floating">Phone</ion-label>
+          <ion-input type="tel" [(ngModel)]="phone" name="phone"></ion-input>
+        </ion-item>
 
-    <ion-button expand="full" type="submit" [disabled]="f.invalid || loading">
-      {{ loading ? 'Inscription...' : 'S\'inscrire' }}
-    </ion-button>
-  </form>
+        <ion-button expand="block" type="submit" [disabled]="f.invalid || loading">
+          {{ loading ? 'Signing up...' : 'Sign up' }}
+        </ion-button>
+      </form>
 
-  <div class="ion-text-center" style="margin-top:12px;">
-    <a routerLink="/login">J'ai déjà un compte — Se connecter</a>
+      <div class="ion-text-center link-row">
+        <a routerLink="/login">Already have an account — Log in</a>
+      </div>
+    </div>
   </div>
 </ion-content>

@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <!-- <ion-buttons slot="start">
+      <ion-menu-button autoHide="false"></ion-menu-button>
+    </ion-buttons> -->
+
+    <ion-title>
+      <img
+        src="assets/logo.png"
+        alt="Logo"
+        class="app-logo"
+        (click)="goHome()"
+      />
+      <!-- Alternative icon version if needed:
+      <ion-icon name="logo-ionic" size="large" (click)="goHome()"></ion-icon>
+      -->
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <!-- Connected user -->
+      <ng-container *ngIf="user$ | async as user; else guestTpl">
+        <ng-container [ngSwitch]="user.role">
+          <!-- Admin specific actions -->
+          <ng-container *ngSwitchCase="'admin'">
+            <div class="notification-wrapper" (click)="goToNotifications()">
+              <ion-icon name="notifications-outline" class="notification-icon"></ion-icon>
+              <span class="notification-badge" *ngIf="user.hasNotifications"></span>
+            </div>
+
+            <ion-button fill="clear" routerLink="/admin/home">
+              <ion-icon name="speedometer-outline" slot="start"></ion-icon>
+              <span class="toolbar-button-label">Dashboard</span>
+            </ion-button>
+
+            <ion-button fill="clear" (click)="logout()">
+              <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            </ion-button>
+          </ng-container>
+
+          <!-- Default authenticated actions (user/owner/null) -->
+          <ng-container *ngSwitchDefault>
+            <div class="notification-wrapper" (click)="goToNotifications()">
+              <ion-icon name="notifications-outline" class="notification-icon"></ion-icon>
+              <span class="notification-badge" *ngIf="user.hasNotifications"></span>
+            </div>
+
+            <ion-button fill="clear" routerLink="/reservations">
+              <ion-icon name="calendar-outline" slot="start"></ion-icon>
+              <span class="toolbar-button-label">Reservations</span>
+            </ion-button>
+
+            <ion-button fill="clear" routerLink="/account">
+              <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+            </ion-button>
+
+            <ion-button fill="clear" (click)="logout()">
+              <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            </ion-button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- Guest actions -->
+      <ng-template #guestTpl>
+        <ion-button fill="clear" routerLink="/admin-login">
+          <ion-icon name="man-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" routerLink="/login">
+          <ion-icon name="log-in-outline"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" routerLink="/register" aria-label="Register" title="Register">
+          <img src="assets/register.svg" alt="Sign Up" class="signup-icon" />
+        </ion-button>
+      </ng-template>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
