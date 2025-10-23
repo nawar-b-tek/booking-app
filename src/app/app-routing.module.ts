@@ -10,6 +10,15 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
+    path: 'annonces/:id',
+    loadChildren: () => import('./pages/annonce-detail/annonce-detail.module').then(m => m.AnnonceDetailPageModule)
+  },
+  {
+    path: 'reservations',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./pages/reservations/reservations.module').then(m => m.ReservationsPageModule)
+  },
+  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)
   },
