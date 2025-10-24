@@ -6,12 +6,60 @@ import { IonicModule } from '@ionic/angular';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { Observable, catchError, map, of } from 'rxjs';
 
+// Interface complète qui correspond à votre structure Firebase
 interface Annonce {
-  id: string;
+  id?: string;
+  
+  // Informations principales
   title?: string;
   description?: string;
+  currency?: string;
+  
+  // Prix
   price?: number;
+  price_per_day?: number;
+  price_per_month?: number;
+  
+  // Photos
   photos?: string[];
+  
+  // Adresse (objet imbriqué)
+  address?: {
+    street?: string;
+    city?: string;
+    postal_code?: string;
+    country?: string;
+  };
+  
+  // Contact (objet imbriqué)
+  contact?: {
+    phone?: string;
+    email?: string;
+  };
+  
+  // Localisation (objet imbriqué)
+  location?: {
+    latitude?: number;
+    longitude?: number;
+  };
+  
+  // Caractéristiques
+  bedrooms?: number;
+  bathrooms?: number;
+  
+  // Réservation
+  isBooked?: boolean;
+  id_booked_user?: string;
+  
+  // Propriétaire
+  userId?: string;
+  posterId?: string;
+  ownerEmail?: string;
+  user_id?: string;
+  
+  // Timestamps
+  createdAt?: any;
+  updatedAt?: any;
 }
 
 @Component({
@@ -38,4 +86,3 @@ export class HomePage {
     })
   );
 }
-

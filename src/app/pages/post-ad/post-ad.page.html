@@ -1,107 +1,115 @@
-<ion-header translucent="true">
-  <ion-toolbar color="light">
-    <ion-icon slot="start" name="megaphone-outline"></ion-icon>
-    <ion-title>Post an Ad</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <form [formGroup]="adForm" (ngSubmit)="submitAd()">
-    <ion-item>
-      <ion-label position="stacked">Title</ion-label>
-      <ion-input type="text" formControlName="title" placeholder="Ad title"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Phone</ion-label>
-      <ion-input type="tel" formControlName="phone" placeholder="Ex: +216 9XX XXX XXX"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Price / day</ion-label>
-      <ion-input type="number" formControlName="price" placeholder="Daily price in DT"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Currency</ion-label>
-      <ion-select formControlName="currency" interface="popover">
-        <ion-select-option value="TND">TND</ion-select-option>
-        <ion-select-option value="EUR">EUR</ion-select-option>
-        <ion-select-option value="USD">USD</ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Current location</ion-label>
-      <ion-button slot="end" type="button" (click)="getCurrentLocation()">
-        <ion-icon slot="start" name="locate-outline"></ion-icon>
-        Fetch
-      </ion-button>
-    </ion-item>
-
-    <ion-item *ngIf="latitude && longitude">
-      Latitude: {{ latitude }}, Longitude: {{ longitude }}
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Bedrooms</ion-label>
-      <ion-input type="number" formControlName="bedrooms" min="0"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Bathrooms</ion-label>
-      <ion-input type="number" formControlName="bathrooms" min="0"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Description</ion-label>
-      <ion-textarea
-        formControlName="description"
-        placeholder="Describe your property and key features"
-        rows="5"
-      ></ion-textarea>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Street</ion-label>
-      <ion-input type="text" formControlName="street" placeholder="Street address"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">City</ion-label>
-      <ion-input type="text" formControlName="city"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Postal Code</ion-label>
-      <ion-input type="text" formControlName="postalCode"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Country</ion-label>
-      <ion-input type="text" formControlName="country"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Contact email</ion-label>
-      <ion-input type="email" formControlName="contactEmail" placeholder="Shown to renters"></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Photos</ion-label>
-      <ion-button slot="end" type="button" (click)="takePhoto()">
-        <ion-icon slot="start" name="camera-outline"></ion-icon>
-        Add photo
-      </ion-button>
-    </ion-item>
-
-    <div *ngIf="photos.length > 0" class="photo-preview">
-      <ion-img *ngFor="let p of photos" [src]="p"></ion-img>
+<ion-content class="ion-padding post-ad-page">
+  <div class="form-container">
+    <div class="form-header">
+      <ion-icon name="megaphone-outline"></ion-icon>
+      <h1>Post</h1>
     </div>
 
-    <ion-button expand="full" type="submit" [disabled]="adForm.invalid" class="ion-margin-top">
-      <ion-icon slot="start" name="megaphone-outline"></ion-icon>
-      Post ad
-    </ion-button>
-  </form>
+    <form [formGroup]="adForm" (ngSubmit)="submitAd()">
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Title</ion-label>
+        <ion-input type="text" formControlName="title" placeholder="Ad title"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Phone</ion-label>
+        <ion-input type="tel" formControlName="phone" placeholder="Ex: +216 9XX XXX XXX"></ion-input>
+      </ion-item>
+
+      <div class="row-fields">
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">Price / day</ion-label>
+          <ion-input type="number" formControlName="price" placeholder="Daily price"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">Currency</ion-label>
+          <ion-select formControlName="currency" interface="popover">
+            <ion-select-option value="TND">TND</ion-select-option>
+            <ion-select-option value="EUR">EUR</ion-select-option>
+            <ion-select-option value="USD">USD</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <ion-item lines="none" class="form-item location-item">
+        <ion-label>Current location</ion-label>
+        <ion-button slot="end" type="button" (click)="getCurrentLocation()" fill="outline" size="small">
+          <ion-icon slot="start" name="locate-outline"></ion-icon>
+          Fetch
+        </ion-button>
+      </ion-item>
+
+      <ion-item lines="none" *ngIf="latitude && longitude" class="location-display">
+        <ion-text color="medium">
+          <small>Latitude: {{ latitude }}, Longitude: {{ longitude }}</small>
+        </ion-text>
+      </ion-item>
+
+      <div class="row-fields">
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">Bedrooms</ion-label>
+          <ion-input type="number" formControlName="bedrooms" min="0"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">Bathrooms</ion-label>
+          <ion-input type="number" formControlName="bathrooms" min="0"></ion-input>
+        </ion-item>
+      </div>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Description</ion-label>
+        <ion-textarea
+          formControlName="description"
+          placeholder="Describe your property and key features"
+          rows="5"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Street</ion-label>
+        <ion-input type="text" formControlName="street" placeholder="Street address"></ion-input>
+      </ion-item>
+
+      <div class="row-fields">
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">City</ion-label>
+          <ion-input type="text" formControlName="city"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none" class="form-item half-width">
+          <ion-label position="stacked">Postal Code</ion-label>
+          <ion-input type="text" formControlName="postalCode"></ion-input>
+        </ion-item>
+      </div>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Country</ion-label>
+        <ion-input type="text" formControlName="country"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item">
+        <ion-label position="stacked">Contact email</ion-label>
+        <ion-input type="email" formControlName="contactEmail" placeholder="Shown to renters"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="form-item photo-item">
+        <ion-label>Photos</ion-label>
+        <ion-button slot="end" type="button" (click)="takePhoto()" fill="outline" size="small">
+          <ion-icon slot="start" name="camera-outline"></ion-icon>
+          Add photo
+        </ion-button>
+      </ion-item>
+
+      <div *ngIf="photos.length > 0" class="photo-preview">
+        <ion-img *ngFor="let p of photos" [src]="p"></ion-img>
+      </div>
+
+      <ion-button expand="block" type="submit" [disabled]="adForm.invalid" class="submit-button">
+        <ion-icon slot="start" name="megaphone-outline"></ion-icon>
+        Post
+      </ion-button>
+    </form>
+  </div>
 </ion-content>

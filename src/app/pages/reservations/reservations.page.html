@@ -1,57 +1,127 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Réservations</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="reservations-page">
+  <div class="page-container">
+    <div class="page-header">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <h1>My Reservations</h1>
+      <p>Manage your requests and bookings</p>
+    </div>
 
-<ion-content>
-  <ion-segment [(ngModel)]="segment">
-    <ion-segment-button value="incoming">
-      <ion-label>À traiter</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="mine">
-      <ion-label>Mes demandes</ion-label>
-    </ion-segment-button>
-  </ion-segment>
+    <ion-segment [(ngModel)]="segment" class="segment-tabs">
+      <ion-segment-button value="incoming">
+        <ion-icon name="mail-outline"></ion-icon>
+        <ion-label>Incoming</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="mine">
+        <ion-icon name="paper-plane-outline"></ion-icon>
+        <ion-label>My Requests</ion-label>
+      </ion-segment-button>
+    </ion-segment>
 
-  <ng-container *ngIf="segment === 'incoming'">
-    <ion-list *ngIf="incoming$ | async as incoming; else emptyIncoming">
-      <ion-item *ngFor="let r of incoming">
-        <ion-label>
-          <div><strong>{{ r.annonceTitle }}</strong></div>
-          <div>Du {{ r.startDate | date }} au {{ r.endDate | date }}</div>
-          <div>Total: {{ r.totalPrice }} {{ r.currency || 'TND' }}</div>
-          <div>De: {{ r.renterEmail }}</div>
-          <div>Status: {{ r.status }}</div>
-        </ion-label>
-        <ion-button color="success" size="small" (click)="approve(r)" [disabled]="r.status !== 'pending'">Approuver</ion-button>
-        <ion-button color="danger" size="small" (click)="deny(r)" [disabled]="r.status !== 'pending'">Refuser</ion-button>
-      </ion-item>
-    </ion-list>
-    <ng-template #emptyIncoming>
-      <ion-text color="medium">
-        <p class="empty">Aucune réservation à traiter</p>
-      </ion-text>
-    </ng-template>
-  </ng-container>
+    <ng-container *ngIf="segment === 'incoming'">
+      <div class="reservations-container" *ngIf="incoming$ | async as incoming; else emptyIncoming">
+        <ion-card *ngFor="let r of incoming" class="reservation-card">
+          <div class="card-header">
+            <div class="status-badge" [ngClass]="'status-' + r.status">
+              <ion-icon [name]="getStatusIcon(r.status)"></ion-icon>
+              {{ getStatusLabel(r.status) }}
+            </div>
+          </div>
 
-  <ng-container *ngIf="segment === 'mine'">
-    <ion-list *ngIf="mine$ | async as mine; else emptyMine">
-      <ion-item *ngFor="let r of mine">
-        <ion-label>
-          <div><strong>{{ r.annonceTitle }}</strong></div>
-          <div>Du {{ r.startDate | date }} au {{ r.endDate | date }}</div>
-          <div>Total: {{ r.totalPrice }} {{ r.currency || 'TND' }}</div>
-          <div>Propriétaire: {{ r.ownerEmail }}</div>
-          <div>Status: {{ r.status }}</div>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-    <ng-template #emptyMine>
-      <ion-text color="medium">
-        <p class="empty">Aucune réservation envoyée</p>
-      </ion-text>
-    </ng-template>
-  </ng-container>
+          <ion-card-content>
+            <h3 class="property-title">{{ r.annonceTitle }}</h3>
+            
+            <div class="reservation-details">
+              <div class="detail-item">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>{{ r.startDate | date:'dd/MM/yyyy' }} → {{ r.endDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>{{ r.totalPrice }} {{ r.currency || 'TND' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>{{ r.renterEmail }}</span>
+              </div>
+            </div>
+
+            <div class="action-buttons" *ngIf="r.status === 'pending'">
+              <ion-button expand="block" color="success" (click)="approve(r)">
+                <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                Approve
+              </ion-button>
+              <ion-button expand="block" color="danger" (click)="deny(r)">
+                <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+                Deny
+              </ion-button>
+            </div>
+
+            <div class="info-message" *ngIf="r.status !== 'pending'">
+              <ion-icon name="information-circle-outline"></ion-icon>
+              <span>This reservation has already been {{ r.status === 'approved' ? 'approved' : 'denied' }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <ng-template #emptyIncoming>
+        <div class="empty-state">
+          <ion-icon name="mail-open-outline"></ion-icon>
+          <h3>No reservations to process</h3>
+          <p>You have no pending reservation requests</p>
+        </div>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="segment === 'mine'">
+      <div class="reservations-container" *ngIf="mine$ | async as mine; else emptyMine">
+        <ion-card *ngFor="let r of mine" class="reservation-card">
+          <div class="card-header">
+            <div class="status-badge" [ngClass]="'status-' + r.status">
+              <ion-icon [name]="getStatusIcon(r.status)"></ion-icon>
+              {{ getStatusLabel(r.status) }}
+            </div>
+          </div>
+
+          <ion-card-content>
+            <h3 class="property-title">{{ r.annonceTitle }}</h3>
+            
+            <div class="reservation-details">
+              <div class="detail-item">
+                <ion-icon name="calendar-outline"></ion-icon>
+                <span>{{ r.startDate | date:'dd/MM/yyyy' }} → {{ r.endDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-icon name="cash-outline"></ion-icon>
+                <span>{{ r.totalPrice }} {{ r.currency || 'TND' }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>Owner: {{ r.ownerEmail }}</span>
+              </div>
+            </div>
+
+            <div class="status-message" [ngClass]="'message-' + r.status">
+              <ion-icon [name]="getStatusIcon(r.status)"></ion-icon>
+              <span *ngIf="r.status === 'pending'">Waiting for owner approval</span>
+              <span *ngIf="r.status === 'approved'">Your reservation has been approved</span>
+              <span *ngIf="r.status === 'denied'">Your request has been denied</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <ng-template #emptyMine>
+        <div class="empty-state">
+          <ion-icon name="paper-plane-outline"></ion-icon>
+          <h3>No sent reservations</h3>
+          <p>You haven’t made any reservation requests yet</p>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
 </ion-content>
-

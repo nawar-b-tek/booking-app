@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { addDoc, collection, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { Injectable,inject} from '@angular/core';
+import {getFirestore, serverTimestamp } from 'firebase/firestore';
 import { getApp, getApps, initializeApp } from 'firebase/app';
-
 import { environment } from '../../environments/environment';
-
+import { Observable } from 'rxjs';
+import { Firestore, collection, addDoc } from '@angular/fire/firestore'
 type Address = {
   street?: string;
   city?: string;
@@ -42,8 +42,8 @@ export type CreateAdPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class FirebaseService {
-  private app = getApps().length ? getApp() : initializeApp(environment.firebase);
-  private firestore = getFirestore(this.app);
+
+  private firestore = inject(Firestore);
 
   private dataURLtoBlob(dataUrl: string): Blob {
     const parts = dataUrl.split(',');

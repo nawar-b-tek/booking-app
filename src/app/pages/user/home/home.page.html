@@ -1,66 +1,127 @@
-<ion-header translucent="true">
-  <ion-toolbar color="primary">
-    <ion-title>User Home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="user-home-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <div class="welcome-header">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <h1>Welcome Back!</h1>
+        </div>
+        <p class="hero-subtitle">Manage your bookings and explore new properties tailored for you</p>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <ion-button routerLink="/reservations" class="action-btn">
+            <ion-icon slot="start" name="calendar-outline"></ion-icon>
+            My Reservations
+          </ion-button>
+          <ion-button routerLink="/post-ad" class="action-btn" fill="outline">
+            <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+            Post an Ad
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<ion-content class="background-image">
-  <section class="overlay">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Welcome back</ion-card-title>
-      </ion-card-header>
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-container">
+      <div class="stat-card">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Active Reservations</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="home-outline"></ion-icon>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>My Listings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <ion-icon name="star-outline"></ion-icon>
+        <div class="stat-info">
+          <h3>0</h3>
+          <p>Favorites</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Announcements Section -->
+  <section class="annonces-section">
+    <div class="section-header">
+      <h2>Latest Announcements</h2>
+      <p>Tap an announcement to see more details</p>
+    </div>
+
+    <!-- Error Message -->
+    <ion-card *ngIf="errorMessage" class="error-card">
       <ion-card-content>
-        Manage your bookings and explore new announcements tailored for you.
+        <ion-icon name="warning-outline"></ion-icon>
+        <p>{{ errorMessage }}</p>
       </ion-card-content>
     </ion-card>
+
+    <!-- Announcements Grid -->
+    <div class="annonces-grid" *ngIf="annonces$ | async as annonces; else loading">
+      <ion-card
+        *ngFor="let annonce of annonces"
+        [routerLink]="['/annonces', annonce.id]"
+        class="annonce-card"
+      >
+        <!-- Image -->
+        <div class="card-image" *ngIf="annonce.photos && annonce.photos.length > 0">
+          <img [src]="annonce.photos[0]" alt="Property photo" />
+          
+          <!-- Price Badge -->
+          <div class="card-badge" *ngIf="annonce.price">
+            {{ annonce.price | currency: 'TND' : 'symbol' : '1.0-0' }} / day
+          </div>
+        </div>
+        
+        <ion-card-content>
+          <!-- Title -->
+          <h3>{{ annonce.title || 'Untitled announcement' }}</h3>
+          
+          <!-- Description -->
+          <p class="description" *ngIf="annonce.description">
+            {{ annonce.description }}
+          </p>
+          
+          <!-- View Details Link -->
+          <div class="card-footer">
+            <span class="view-link">
+              View details
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Empty State -->
+      <ion-card *ngIf="!annonces || annonces.length === 0" class="empty-card">
+        <ion-card-content>
+          <ion-icon name="home-outline"></ion-icon>
+          <h3>No announcements available</h3>
+          <p>Be the first to post an announcement!</p>
+          <ion-button routerLink="/post-ad" class="post-btn">
+            <ion-icon slot="start" name="add-outline"></ion-icon>
+            Post an Announcement
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </section>
 
-  <section class="annonces-section">
-    <ion-list lines="full">
-      <ion-list-header lines="inset">
-        <ion-label>
-          <h2>Latest Announcements</h2>
-          <p>Tap an announcement to see more details.</p>
-        </ion-label>
-      </ion-list-header>
-
-      <ion-item *ngIf="errorMessage" color="danger" lines="none">
-        <ion-icon slot="start" name="warning-outline"></ion-icon>
-        <ion-label>{{ errorMessage }}</ion-label>
-      </ion-item>
-
-      <ng-container *ngIf="annonces$ | async as annonces; else loading">
-        <ion-item
-          *ngFor="let annonce of annonces"
-          [routerLink]="['/annonces', annonce.id]"
-          detail="true"
-        >
-          <ion-thumbnail slot="start" *ngIf="annonce.photos?.length">
-            <img [src]="annonce.photos![0]" alt="Announcement image" />
-          </ion-thumbnail>
-          <ion-label>
-            <h3>{{ annonce.title || 'Untitled announcement' }}</h3>
-            <p *ngIf="annonce.price !== undefined">
-              {{ annonce.price | currency: 'TND' : 'symbol' : '1.0-0' }} / day
-            </p>
-            <p class="description" *ngIf="annonce.description">
-              {{ annonce.description }}
-            </p>
-          </ion-label>
-        </ion-item>
-
-        <ion-item *ngIf="!annonces.length" lines="none">
-          <ion-label>No announcements have been published yet.</ion-label>
-        </ion-item>
-      </ng-container>
-    </ion-list>
-  </section>
-
+  <!-- Loading Template -->
   <ng-template #loading>
-    <ion-item lines="none">
-      <ion-spinner slot="start" name="crescent"></ion-spinner>
-      <ion-label>Loading announcements...</ion-label>
-    </ion-item>
+    <div class="loading-container">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Loading announcements...</p>
+    </div>
   </ng-template>
 </ion-content>

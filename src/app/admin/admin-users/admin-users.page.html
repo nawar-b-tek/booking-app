@@ -1,20 +1,25 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Users</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="addUser()">Add</ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Users</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item-sliding *ngFor="let u of users$ | async">
-      <ion-item>
+  <ion-content>
+    <ion-fab vertical="top" horizontal="end" slot="fixed">
+      <ion-fab-button color="success" (click)="addUser()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+
+    <!-- Liste des utilisateurs -->
+    <ion-list>
+      <ion-item *ngFor="let u of users$ | async">
+        <!-- Avatar -->
         <ion-avatar slot="start" *ngIf="u.photoURL">
           <img [src]="u.photoURL" />
         </ion-avatar>
 
+        <!-- Infos -->
         <ion-label>
           <h2>{{ u.displayName || u.name || 'Sans nom' }}</h2>
           <p>{{ u.email || '—' }}</p>
@@ -22,16 +27,21 @@
           <p>Créé le: {{ u.createdAtStr }}</p>
           <small>ID: {{ u.id }}</small>
         </ion-label>
+
+        <!-- Actions -->
+        <ion-buttons slot="end">
+          <ion-button fill="clear" color="primary" (click)="editUser(u)">
+            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button fill="clear" color="danger" (click)="deleteUser(u.id)">
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-item>
+    </ion-list>
 
-      <ion-item-options side="end">
-        <ion-item-option color="primary" (click)="editUser(u)">Modifier</ion-item-option>
-        <ion-item-option color="danger" (click)="deleteUser(u.id)">Supprimer</ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-
-  <ion-refresher slot="fixed" (ionRefresh)="$event.target.complete()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-</ion-content>
+    <!-- Pull to refresh -->
+    <ion-refresher slot="fixed" (ionRefresh)="reloadUsers($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+  </ion-content>

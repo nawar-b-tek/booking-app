@@ -39,7 +39,7 @@ export class LoginPage {
         this.router.navigateByUrl(this.returnUrl);
       } else {
         // sinon redirection par défaut selon role
-        if (role === 'owner') this.router.navigateByUrl('/owner/home');
+        if (role === 'user') this.router.navigateByUrl('/user/home');
         else this.router.navigateByUrl('/user/home');
       }
 

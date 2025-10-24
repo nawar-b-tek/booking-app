@@ -1,68 +1,133 @@
-<ion-header translucent="true">
-  <ion-toolbar color="light">
-    <ion-title>Home</ion-title>
-
-    
-  </ion-toolbar>
-</ion-header>
-
 <ion-content class="background-image">
-  <section class="overlay" >
-    <ion-card color="light">
-      <ion-card-header>
-        <ion-card-title>Welcome to BookingApp</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Browse our latest announcements and manage your reservations easily.
-      </ion-card-content>
-    </ion-card>
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Vacation rentals in Tunisia</h1>
+      <p class="hero-subtitle">Find your ideal accommodation among our best offers</p>
+     
+      <div class="search-card">
+        <div class="search-fields">
+          <div class="search-field">
+            <ion-icon name="location-outline"></ion-icon>
+            <div>
+              <label>Destination</label>
+              <input type="text" placeholder="Où allez-vous?" />
+            </div>
+          </div>
+         
+          <div class="search-field">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <div>
+              <label>Date</label>
+              <input type="text" placeholder="Arrivée → Départ" />
+            </div>
+          </div>
+         
+          <div class="search-field">
+            <ion-icon name="people-outline"></ion-icon>
+            <div>
+              <label>Guests</label>
+              <input type="number" placeholder="2" min="1" />
+            </div>
+          </div>
+         
+          <div class="search-field">
+            <ion-icon name="bed-outline"></ion-icon>
+            <div>
+              <label>Rooms</label>
+              <input type="number" placeholder="1" min="1" />
+            </div>
+          </div>
+        </div>
+       
+        <ion-button expand="block" class="search-button">
+          <ion-icon slot="start" name="search-outline"></ion-icon>
+          search
+        </ion-button>
+      </div>
+    </div>
   </section>
 
   <section class="annonces-section">
-    <ion-list lines="full">
-      <ion-list-header lines="inset">
-        <ion-label>
-          <h2>Latest Announcements</h2>
-          <p>Tap an announcement to see more details.</p>
-        </ion-label>
-      </ion-list-header>
+    <div class="section-header">
+      <h2>Latest Listings</h2>
+      <p>Discover our available properties</p>
+    </div>
 
-      <ion-item *ngIf="errorMessage" color="danger" lines="none">
+    <ion-list lines="none" class="annonces-list">
+      <ion-item *ngIf="errorMessage" color="danger">
         <ion-icon slot="start" name="warning-outline"></ion-icon>
         <ion-label>{{ errorMessage }}</ion-label>
       </ion-item>
 
       <ng-container *ngIf="annonces$ | async as annonces; else loading">
-        <ion-item
+        <ion-card
           *ngFor="let annonce of annonces"
           [routerLink]="['/annonces', annonce.id]"
-          detail="true"
+          class="annonce-card"
         >
-          <ion-thumbnail slot="start" *ngIf="annonce.photos?.length">
-            <img [src]="annonce.photos![0]" alt="Announcement image" />
-          </ion-thumbnail>
-          <ion-label>
-            <h3>{{ annonce.title || 'Untitled announcement' }}</h3>
-            <p *ngIf="annonce.price !== undefined">
-              {{ annonce.price | currency: 'TND' : 'symbol' : '1.0-0' }} / day
+          <!-- Image avec badge de prix -->
+          <div class="card-image" *ngIf="annonce.photos && annonce.photos.length > 0">
+            <img [src]="annonce.photos[0]" alt="Photo de la propriété" />
+           
+            <!-- Badge de réservation -->
+            <div class="card-status" *ngIf="annonce.isBooked">
+              <ion-icon name="checkmark-circle"></ion-icon>
+              Réservé
+            </div>
+           
+            <!-- Badge de prix -->
+            <div class="card-badge" *ngIf="annonce.price_per_day || annonce.price">
+              {{ annonce.price_per_day || annonce.price }} {{ annonce.currency || 'TND' }} / jour
+            </div>
+          </div>
+         
+          <ion-card-content>
+            <!-- Titre -->
+            <h3>{{ annonce.title || 'Annonce sans titre' }}</h3>
+           
+            <!-- Localisation -->
+            <p class="location" *ngIf="annonce.address?.city || annonce.address?.country">
+              <ion-icon name="location-outline"></ion-icon>
+              <span>
+                {{ annonce.address?.city }}{{ annonce.address?.city && annonce.address?.country ? ', ' : '' }}{{ annonce.address?.country }}
+              </span>
             </p>
+           
+            <!-- Description -->
             <p class="description" *ngIf="annonce.description">
               {{ annonce.description }}
             </p>
-          </ion-label>
-        </ion-item>
+           
+            <!-- Caractéristiques (chambres et salles de bain) -->
+            <div class="card-footer" *ngIf="annonce.bedrooms || annonce.bathrooms">
+              <span *ngIf="annonce.bedrooms">
+                <ion-icon name="bed-outline"></ion-icon>
+                {{ annonce.bedrooms }} {{ annonce.bedrooms > 1 ? 'chambres' : 'chambre' }}
+              </span>
+              <span *ngIf="annonce.bathrooms">
+                <ion-icon name="water-outline"></ion-icon>
+                {{ annonce.bathrooms }} {{ annonce.bathrooms > 1 ? 'salles de bain' : 'salle de bain' }}
+              </span>
+            </div>
+          </ion-card-content>
+        </ion-card>
 
-        <ion-item *ngIf="!annonces.length" lines="none">
-          <ion-label>No announcements have been published yet.</ion-label>
-        </ion-item>
+        <!-- Message si aucune annonce -->
+        <ion-card *ngIf="!annonces || annonces.length === 0" class="empty-card">
+          <ion-card-content>
+            <ion-icon name="home-outline"></ion-icon>
+            <p>Aucune annonce disponible pour le moment</p>
+          </ion-card-content>
+        </ion-card>
       </ng-container>
     </ion-list>
   </section>
 
+  <!-- Template de chargement -->
   <ng-template #loading>
-    <ion-item lines="none">
-      <ion-spinner slot="start" name="crescent"></ion-spinner>
-      <ion-label>Loading announcements...</ion-label>
-    </ion-item>
+    <div class="loading-container">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Chargement des annonces...</p>
+    </div>
   </ng-template>
 </ion-content>

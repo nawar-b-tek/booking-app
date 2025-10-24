@@ -3,21 +3,23 @@
   width: 100%;
 }
 
+/* ===== Toolbar principale ===== */
 ion-toolbar {
   --background: #0f172a;
   --color: #f8fafc;
-  --min-height: 88px;
+  --min-height: 64px; /* ↓ Hauteur réduite */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
+  padding: 0 8px; /* légère marge interne */
 }
 
+/* ===== Menu button ===== */
 ion-toolbar ion-menu-button {
   color: inherit;
 }
 
-
-
+/* ===== Titre + logo centré ===== */
 ion-title {
   display: flex;
   justify-content: center;
@@ -25,23 +27,25 @@ ion-title {
 }
 
 .app-logo {
-  height: 40px;
+  height: 60px; /* ↑ Logo agrandi (était 40px) */
   object-fit: contain;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
-img  {
+/* ===== Images globales ===== */
+img {
   color: white;
   width: 24px;
   height: 24px;
 }
 
+/* ===== Boutons à droite ===== */
 ion-buttons[slot="end"] ion-button {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  --padding-start: 8px;
-  --padding-end: 8px;
+  --padding-start: 6px;
+  --padding-end: 6px;
   --color: #f8fafc;
   --color-focused: #f8fafc;
   --color-hover: #f8fafc;
@@ -51,6 +55,7 @@ ion-buttons[slot="end"] ion-button {
   gap: 4px;
 }
 
+/* Style natif des boutons */
 ion-buttons[slot="end"] ion-button::part(native) {
   border-radius: 20px;
   border: 1px solid rgba(148, 163, 184, 0.25);
@@ -58,22 +63,25 @@ ion-buttons[slot="end"] ion-button::part(native) {
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
+/* Effet hover */
 ion-buttons[slot="end"] ion-button:hover::part(native) {
   border-color: rgba(148, 163, 184, 0.45);
-  background-color: rgba(148, 163, 184, 0.12);
+  background-color: rgba(148, 163, 184, 0.15);
 }
 
+/* ===== Label de bouton ===== */
 .toolbar-button-label {
   display: inline-flex;
   align-items: center;
 }
 
+/* ===== Icônes ===== */
 ion-icon {
   font-size: 22px;
   color: inherit;
 }
 
-/* Notification icon with badge */
+/* ===== Notifications ===== */
 .notification-wrapper {
   position: relative;
   display: inline-flex;
@@ -92,6 +100,7 @@ ion-icon {
   color: #60a5fa;
 }
 
+/* Badge de notification */
 .notification-badge {
   position: absolute;
   top: 0px;
@@ -101,4 +110,15 @@ ion-icon {
   width: 10px;
   height: 10px;
   border: 2px solid #ffffff;
+}
+
+/* ===== Responsive : logo plus petit sur mobile ===== */
+@media (max-width: 768px) {
+  ion-toolbar {
+    --min-height: 56px;
+  }
+
+  .app-logo {
+    height: 45px;
+  }
 }

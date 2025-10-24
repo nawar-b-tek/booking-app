@@ -1,28 +1,42 @@
-/* admin-users.page.scss */
-
-/* Ajuste l'aire de contenu pour ne pas être cachée par header/footer */
 ion-content {
-  /* si tu utilises <ion-header> dans la page, la valeur 56px correspond
-     à la hauteur approximative d'une toolbar standard. Ajuste si besoin. */
   --padding-top: calc(var(--ion-safe-area-top) + 56px);
   --padding-bottom: calc(var(--ion-safe-area-bottom) + 56px);
-
-  /* s'assurer que la boîte de contenu tient compte du padding */
   box-sizing: border-box;
 }
 
-/* Par sécurité si tu as un footer global fixe dans app.component,
-   on met un padding-bottom complémentaire sur la liste */
 ion-list {
   padding-bottom: calc(8px + var(--ion-safe-area-bottom) + 56px);
 }
 
-/* Optionnel : si tu veux que l'ion-refresher reste visible et non couvert */
-ion-refresher {
-  margin-top: calc(var(--ion-safe-area-top) + 8px);
+ion-item {
+  margin-bottom: 10px;
 }
 
-/* (Conserve le style précédent pour les items) */
-ion-item-sliding {
-  margin-bottom: 10px;
+ion-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+ion-title {
+  font-weight: 600;
+}
+
+ion-button {
+  font-size: 14px;
+}
+ion-fab {
+  margin-top: 40px;
+  margin-right: 40px;
+
+}
+
+ion-fab-button {
+  --background: #54ad69; 
+  --color: white;
+  --size: 20px; 
+  width: var(--size);
+  height: var(--size);
+  font-size: 18px; 
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }

@@ -8,13 +8,11 @@ import {
   LoadingController,
 } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-
-import { Capacitor } from '@capacitor/core';
-import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
+import { Camera, CameraResultType, CameraSource, Photo, PermissionStatus} from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
-
 import { FirebaseService, CreateAdPayload } from '../../services/firebase.service';
 import { AuthService } from '../../services/auth.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-post-ad',
@@ -72,40 +70,78 @@ export class PostAdPage {
     }
   }
 
+
+  async takePhotoWithWebcam() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      const modal = document.createElement('div');
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.width = '100vw';
+      modal.style.height = '100vh';
+      modal.style.background = 'rgba(0,0,0,0.8)';
+      modal.style.display = 'flex';
+      modal.style.justifyContent = 'center';
+      modal.style.alignItems = 'center';
+      modal.style.zIndex = '10000';
+      modal.appendChild(video);
+
+      const captureButton = document.createElement('button');
+      captureButton.textContent = '📸 Capturer';
+      captureButton.style.position = 'absolute';
+      captureButton.style.bottom = '40px';
+      captureButton.style.padding = '12px 24px';
+      captureButton.style.fontSize = '18px';
+      captureButton.style.cursor = 'pointer';
+      modal.appendChild(captureButton);
+
+      document.body.appendChild(modal);
+      captureButton.onclick = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(video, 0, 0);
+        const dataUrl = canvas.toDataURL('image/png');
+        this.photos.push(dataUrl);
+        stream.getTracks().forEach((track) => track.stop());
+        modal.remove();
+      };
+    } catch (err) {
+      console.error('Erreur webcam:', err);
+      await this.presentAlert(
+        'Erreur caméra',
+        'Impossible d’accéder à la caméra. Vérifiez les permissions du navigateur.'
+      );
+    }
+  }
+
+
+
   async takePhoto() {
     const choice = await this.askPhotoSource();
-    if (!choice) {
-      return;
-    }
+    if (!choice) return;
 
     const platform = Capacitor.getPlatform();
     const isWeb = platform === 'web';
 
-    if (isWeb) {
+    if (isWeb && choice === 'camera') {
+      
+      this.takePhotoWithWebcam();
+      return;
+    }
+
+    if (isWeb && choice === 'gallery') {
+    
       this.openFilePickerAsFallback();
       return;
     }
 
-    try {
-      const photo: Photo = await Camera.getPhoto({
-        quality: 80,
-        resultType: CameraResultType.DataUrl,
-        source: choice === 'camera' ? CameraSource.Camera : CameraSource.Photos,
-      });
 
-      if (photo?.dataUrl) {
-        this.photos.push(photo.dataUrl);
-      } else {
-        console.warn('Camera returned no Data URL', photo);
-      }
-    } catch (err) {
-      console.error('Camera.getPhoto error', err);
-      await this.presentAlert(
-        'Camera error',
-        'Unable to access the camera. You can pick an image from the gallery instead.'
-      );
-      this.openFilePickerAsFallback();
-    }
   }
 
   async askPhotoSource(): Promise<'camera' | 'gallery' | null> {

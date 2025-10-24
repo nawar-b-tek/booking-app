@@ -1,49 +1,152 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>My Account</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="account-page">
+  <div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <h1>My Account</h1>
+      <p>Manage your profile and security settings</p>
+    </div>
 
-<ion-content class="ion-padding">
-  <form (ngSubmit)="saveChanges()">
-    <ion-list lines="full">
-      <ion-item>
-        <ion-label position="stacked">Display name</ion-label>
-        <ion-input [(ngModel)]="accountForm.displayName" name="displayName" placeholder="Your name"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Email address</ion-label>
-        <ion-input [(ngModel)]="accountForm.email" name="email" type="email" placeholder="example@email.com"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Phone</ion-label>
-        <ion-input [(ngModel)]="accountForm.phone" name="phone" type="tel" placeholder="Phone number"></ion-input>
-      </ion-item>
-    </ion-list>
+    <form (ngSubmit)="saveChanges()">
+      <!-- Profile Information Card -->
+      <ion-card class="section-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="person-outline"></ion-icon>
+            Profile Information
+          </ion-card-title>
+          <ion-card-subtitle>Update your personal details</ion-card-subtitle>
+        </ion-card-header>
 
-    <ion-list lines="full" class="ion-margin-top">
-      <ion-item>
-        <ion-label position="stacked">Current password</ion-label>
-        <ion-input [(ngModel)]="accountForm.currentPassword" name="currentPassword" type="password" placeholder="Current password"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">New password</ion-label>
-        <ion-input [(ngModel)]="accountForm.newPassword" name="newPassword" type="password" placeholder="Leave empty to keep current"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="stacked">Confirm new password</ion-label>
-        <ion-input [(ngModel)]="accountForm.confirmNewPassword" name="confirmNewPassword" type="password"></ion-input>
-      </ion-item>
-    </ion-list>
+        <ion-card-content>
+          <div class="form-group">
+            <label class="field-label">
+              <ion-icon name="text-outline"></ion-icon>
+              Display Name
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.displayName"
+              name="displayName"
+              placeholder="Your name"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+          </div>
 
-    <ion-text color="medium">
-      <p class="helper-text">
-        Every change requires your current password. To change your password, enter the new password twice.
-      </p>
-    </ion-text>
+          <div class="form-group">
+            <label class="field-label">
+              <ion-icon name="mail-outline"></ion-icon>
+              Email Address
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.email"
+              name="email"
+              type="email"
+              placeholder="example@email.com"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+          </div>
 
-    <ion-button expand="block" color="primary" type="submit" [disabled]="saving">
-      {{ saving ? 'Saving…' : 'Save changes' }}
-    </ion-button>
-  </form>
+          <div class="form-group">
+            <label class="field-label">
+              <ion-icon name="call-outline"></ion-icon>
+              Phone Number
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.phone"
+              name="phone"
+              type="tel"
+              placeholder="Phone number"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Security Settings Card -->
+      <ion-card class="section-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="shield-checkmark-outline"></ion-icon>
+            Security Settings
+          </ion-card-title>
+          <ion-card-subtitle>Change your password</ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="form-group">
+            <label class="field-label required">
+              <ion-icon name="lock-closed-outline"></ion-icon>
+              Current Password
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.currentPassword"
+              name="currentPassword"
+              type="password"
+              placeholder="Enter your current password"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+            <ion-text class="field-hint">
+              <small>Required to save any changes</small>
+            </ion-text>
+          </div>
+
+          <div class="password-divider">
+            <span>Change Password (Optional)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">
+              <ion-icon name="key-outline"></ion-icon>
+              New Password
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.newPassword"
+              name="newPassword"
+              type="password"
+              placeholder="Leave empty to keep current"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+          </div>
+
+          <div class="form-group">
+            <label class="field-label">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              Confirm New Password
+            </label>
+            <ion-input
+              [(ngModel)]="accountForm.confirmNewPassword"
+              name="confirmNewPassword"
+              type="password"
+              placeholder="Confirm your new password"
+              class="modern-input"
+              fill="outline"
+            ></ion-input>
+          </div>
+
+          <ion-note class="security-note">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            <span>Every change requires your current password. To change your password, enter the new password twice.</span>
+          </ion-note>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <ion-button
+          expand="block"
+          class="save-button"
+          type="submit"
+          [disabled]="saving"
+        >
+          <ion-icon slot="start" [name]="saving ? 'hourglass-outline' : 'checkmark-circle-outline'"></ion-icon>
+          {{ saving ? 'Saving Changes...' : 'Save Changes' }}
+        </ion-button>
+      </div>
+    </form>
+  </div>
 </ion-content>

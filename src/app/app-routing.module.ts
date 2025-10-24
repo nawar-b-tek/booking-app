@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  // autres routes existantes (home, login, register, etc.)
+
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
@@ -27,7 +27,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule)
   },
 
-  // --- ADMIN area: home et admin-users en tant qu'entrées absolues
+
   {
     path: 'admin',
     children: [
@@ -53,15 +53,6 @@ const routes: Routes = [
     path: 'admin-login', loadChildren: () => import('./pages/admin-login/admin-login.module').then(m => m.AdminLoginPageModule)
   },
 
-  // fallback / redirect
-  {
-    path: 'user/home',
-    loadChildren: () => import('./pages/user/home/home.module').then(m => m.HomePageModule)
-  },
-  {
-    path: 'owner/home',
-    loadChildren: () => import('./pages/owner/home/home.module').then(m => m.HomePageModule)
-  },
   {
     path: 'post-ad',
     loadComponent: () => import('./pages/post-ad/post-ad.page').then(m => m.PostAdPage)
@@ -74,6 +65,10 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'home'
+  },
+  {
+    path: 'userhome',
+    loadComponent: () => import('./pages/user/home/home.module').then(m =>m.HomePageModule)
   }
 ];
 
