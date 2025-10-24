@@ -5,9 +5,7 @@ import { AdminUsersPage } from './admin-users.page';
 
 const routes: Routes = [
   { path: '', component: AdminUsersPage },
-  //{ path: 'add', loadChildren: () => import('./admin-users-add/admin-users-add.module').then(m => m.AdminUsersAddPageModule) },
-  //{ path: 'edit/:id', loadChildren: () => import('./admin-users-edit/admin-users-edit.module').then(m => m.AdminUsersEditPageModule) }
-];
+ ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -3,23 +3,21 @@
   width: 100%;
 }
 
-/* ===== Toolbar principale ===== */
+
 ion-toolbar {
   --background: #0f172a;
   --color: #f8fafc;
-  --min-height: 64px; /* ↓ Hauteur réduite */
+  --min-height: 64px; 
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
-  padding: 0 8px; /* légère marge interne */
+  padding: 0 8px; 
 }
 
-/* ===== Menu button ===== */
 ion-toolbar ion-menu-button {
   color: inherit;
 }
 
-/* ===== Titre + logo centré ===== */
 ion-title {
   display: flex;
   justify-content: center;
@@ -27,20 +25,18 @@ ion-title {
 }
 
 .app-logo {
-  height: 60px; /* ↑ Logo agrandi (était 40px) */
+  height: 60px; 
   object-fit: contain;
   cursor: pointer;
   border-radius: 6px;
 }
 
-/* ===== Images globales ===== */
 img {
   color: white;
   width: 24px;
   height: 24px;
 }
 
-/* ===== Boutons à droite ===== */
 ion-buttons[slot="end"] ion-button {
   font-size: 0.9rem;
   font-weight: 500;
@@ -55,7 +51,6 @@ ion-buttons[slot="end"] ion-button {
   gap: 4px;
 }
 
-/* Style natif des boutons */
 ion-buttons[slot="end"] ion-button::part(native) {
   border-radius: 20px;
   border: 1px solid rgba(148, 163, 184, 0.25);
@@ -63,25 +58,21 @@ ion-buttons[slot="end"] ion-button::part(native) {
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-/* Effet hover */
 ion-buttons[slot="end"] ion-button:hover::part(native) {
   border-color: rgba(148, 163, 184, 0.45);
   background-color: rgba(148, 163, 184, 0.15);
 }
 
-/* ===== Label de bouton ===== */
 .toolbar-button-label {
   display: inline-flex;
   align-items: center;
 }
 
-/* ===== Icônes ===== */
 ion-icon {
   font-size: 22px;
   color: inherit;
 }
 
-/* ===== Notifications ===== */
 .notification-wrapper {
   position: relative;
   display: inline-flex;

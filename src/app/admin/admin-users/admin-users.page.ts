@@ -6,13 +6,14 @@ import {
   Firestore,
   collection,
   collectionData,
-  addDoc,
   doc,
+  setDoc,
   deleteDoc
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin-users',
@@ -23,6 +24,7 @@ import { map } from 'rxjs/operators';
 })
 export class AdminUsersPage implements OnInit {
   users$!: Observable<any[]>;
+  private readonly signUpUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebase.apiKey}`;
 
   constructor(
     private firestore: Firestore,
@@ -57,6 +59,7 @@ export class AdminUsersPage implements OnInit {
       inputs: [
         { name: 'name', type: 'text', placeholder: 'Nom' },
         { name: 'email', type: 'email', placeholder: 'Email' },
+        { name: 'password', type: 'password', placeholder: 'Mot de passe' },
         { name: 'phone', type: 'text', placeholder: 'Téléphone' },
         { name: 'role', type: 'text', placeholder: 'Rôle (user ou admin)' },
       ],
@@ -65,8 +68,14 @@ export class AdminUsersPage implements OnInit {
         {
           text: 'Ajouter',
           handler: async (data: any) => {
-            if (!data.name || !data.email) {
-              return;
+            if (!data.name || !data.email || !data.password) {
+              window.alert('Veuillez saisir un nom, un email et un mot de passe.');
+              return false;
+            }
+
+            if (data.password.length < 6) {
+              window.alert('Le mot de passe doit contenir au moins 6 caractères.');
+              return false;
             }
 
             const user = {
@@ -79,11 +88,15 @@ export class AdminUsersPage implements OnInit {
             };
 
             try {
-              await addDoc(collection(this.firestore, 'users'), user);
-              console.log('Use added');
+              const uid = await this.createAuthAccount(user.email, data.password, user.displayName);
+              await setDoc(doc(this.firestore, `users/${uid}`), user);
+              console.log('Utilisateur ajouté');
               this.loadUsers();
+              return true;
             } catch (err) {
               console.error('Error:', err);
+              window.alert(`Erreur lors de la création de l'utilisateur: ${(err as Error)?.message ?? err}`);
+              return false;
             }
           },
         },
@@ -100,12 +113,43 @@ export class AdminUsersPage implements OnInit {
   async deleteUser(id: string) {
     if (!confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) return;
     await deleteDoc(doc(this.firestore, `users/${id}`));
-    alert('Utilisateur supprimé');
+    window.alert('Utilisateur supprimé');
     this.loadUsers();
   }
 
   reloadUsers(event: any) {
     this.loadUsers();
     event.target.complete();
+  }
+
+  private async createAuthAccount(email: string, password: string, displayName?: string): Promise<string> {
+    const body: Record<string, unknown> = {
+      email,
+      password,
+      returnSecureToken: false,
+    };
+
+    if (displayName) {
+      body['displayName'] = displayName;
+    }
+
+    const response = await fetch(this.signUpUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    const json = await response.json();
+    if (!response.ok) {
+      const message = json?.error?.message ? String(json.error.message) : 'Impossible de créer le compte utilisateur.';
+      throw new Error(message);
+    }
+
+    const localId = json?.localId;
+    if (!localId) {
+      throw new Error('Identifiant utilisateur introuvable dans la réponse Firebase.');
+    }
+
+    return localId as string;
   }
 }

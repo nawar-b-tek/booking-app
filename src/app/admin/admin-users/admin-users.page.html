@@ -11,15 +11,9 @@
       </ion-fab-button>
     </ion-fab>
 
-    <!-- Liste des utilisateurs -->
     <ion-list>
       <ion-item *ngFor="let u of users$ | async">
-        <!-- Avatar -->
-        <ion-avatar slot="start" *ngIf="u.photoURL">
-          <img [src]="u.photoURL" />
-        </ion-avatar>
 
-        <!-- Infos -->
         <ion-label>
           <h2>{{ u.displayName || u.name || 'Sans nom' }}</h2>
           <p>{{ u.email || '—' }}</p>
@@ -28,7 +22,6 @@
           <small>ID: {{ u.id }}</small>
         </ion-label>
 
-        <!-- Actions -->
         <ion-buttons slot="end">
           <ion-button fill="clear" color="primary" (click)="editUser(u)">
             <ion-icon name="create-outline" slot="icon-only"></ion-icon>
@@ -40,7 +33,6 @@
       </ion-item>
     </ion-list>
 
-    <!-- Pull to refresh -->
     <ion-refresher slot="fixed" (ionRefresh)="reloadUsers($event)">
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
