@@ -3,47 +3,44 @@
     <div class="hero-content">
       <h1 class="hero-title">Vacation rentals in Tunisia</h1>
       <p class="hero-subtitle">Find your ideal accommodation among our best offers</p>
-     
-      <div class="search-card">
+
+      <form class="search-card" (ngSubmit)="applyFilters()" novalidate>
         <div class="search-fields">
-          <div class="search-field">
+          <label class="search-field">
             <ion-icon name="location-outline"></ion-icon>
             <div>
-              <label>Destination</label>
-              <input type="text" placeholder="Où allez-vous?" />
+              <span class="field-label">Destination</span>
+              <input
+                type="text"
+                name="destination"
+                [(ngModel)]="filters.destination"
+                placeholder="Où allez-vous ?"
+                autocomplete="off"
+              />
             </div>
-          </div>
-         
-          <div class="search-field">
-            <ion-icon name="calendar-outline"></ion-icon>
-            <div>
-              <label>Date</label>
-              <input type="text" placeholder="Arrivée → Départ" />
-            </div>
-          </div>
-         
-          <div class="search-field">
-            <ion-icon name="people-outline"></ion-icon>
-            <div>
-              <label>Guests</label>
-              <input type="number" placeholder="2" min="1" />
-            </div>
-          </div>
-         
-          <div class="search-field">
+          </label>
+
+          <label class="search-field">
             <ion-icon name="bed-outline"></ion-icon>
             <div>
-              <label>Rooms</label>
-              <input type="number" placeholder="1" min="1" />
+              <span class="field-label">Chambres minimum</span>
+              <input
+                type="number"
+                name="rooms"
+                min="1"
+                [(ngModel)]="filters.rooms"
+                placeholder="1"
+                inputmode="numeric"
+              />
             </div>
-          </div>
+          </label>
         </div>
-       
-        <ion-button expand="block" class="search-button">
+
+        <ion-button expand="block" class="search-button" type="submit">
           <ion-icon slot="start" name="search-outline"></ion-icon>
-          search
+          Rechercher
         </ion-button>
-      </div>
+      </form>
     </div>
   </section>
 
@@ -59,46 +56,39 @@
         <ion-label>{{ errorMessage }}</ion-label>
       </ion-item>
 
-      <ng-container *ngIf="annonces$ | async as annonces; else loading">
+      <ng-container *ngIf="filteredAnnonces$ | async as annonces; else loading">
         <ion-card
           *ngFor="let annonce of annonces"
           [routerLink]="['/annonces', annonce.id]"
           class="annonce-card"
         >
-          <!-- Image avec badge de prix -->
-          <div class="card-image" *ngIf="annonce.photos && annonce.photos.length > 0">
-            <img [src]="annonce.photos[0]" alt="Photo de la propriété" />
-           
-            <!-- Badge de réservation -->
+          <div class="card-image" *ngIf="annonce.photos?.length">
+            <img [src]="annonce.photos?.[0] ?? ''" alt="Photo de la propriété" />
+
             <div class="card-status" *ngIf="annonce.isBooked">
               <ion-icon name="checkmark-circle"></ion-icon>
               Réservé
             </div>
-           
-            <!-- Badge de prix -->
+
             <div class="card-badge" *ngIf="annonce.price_per_day || annonce.price">
               {{ annonce.price_per_day || annonce.price }} {{ annonce.currency || 'TND' }} / jour
             </div>
           </div>
-         
+
           <ion-card-content>
-            <!-- Titre -->
             <h3>{{ annonce.title || 'Annonce sans titre' }}</h3>
-           
-            <!-- Localisation -->
+
             <p class="location" *ngIf="annonce.address?.city || annonce.address?.country">
               <ion-icon name="location-outline"></ion-icon>
               <span>
                 {{ annonce.address?.city }}{{ annonce.address?.city && annonce.address?.country ? ', ' : '' }}{{ annonce.address?.country }}
               </span>
             </p>
-           
-            <!-- Description -->
+
             <p class="description" *ngIf="annonce.description">
               {{ annonce.description }}
             </p>
-           
-            <!-- Caractéristiques (chambres et salles de bain) -->
+
             <div class="card-footer" *ngIf="annonce.bedrooms || annonce.bathrooms">
               <span *ngIf="annonce.bedrooms">
                 <ion-icon name="bed-outline"></ion-icon>
@@ -112,18 +102,16 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Message si aucune annonce -->
-        <ion-card *ngIf="!annonces || annonces.length === 0" class="empty-card">
+        <ion-card *ngIf="!annonces || !annonces.length" class="empty-card">
           <ion-card-content>
             <ion-icon name="home-outline"></ion-icon>
-            <p>Aucune annonce disponible pour le moment</p>
+            <p>Aucune annonce ne correspond à votre recherche.</p>
           </ion-card-content>
         </ion-card>
       </ng-container>
     </ion-list>
   </section>
 
-  <!-- Template de chargement -->
   <ng-template #loading>
     <div class="loading-container">
       <ion-spinner name="crescent" color="primary"></ion-spinner>

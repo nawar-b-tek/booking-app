@@ -20,10 +20,7 @@
         <ng-container [ngSwitch]="user.role">
           <!-- Admin specific actions -->
           <ng-container *ngSwitchCase="'admin'">
-            <div class="notification-wrapper" (click)="goToNotifications()">
-              <ion-icon name="notifications-outline" class="notification-icon"></ion-icon>
-              <span class="notification-badge" *ngIf="user.hasNotifications"></span>
-            </div>
+            
 
             <ion-button fill="clear" routerLink="/admin/home">
               <ion-icon name="speedometer-outline" slot="start"></ion-icon>

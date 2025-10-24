@@ -1,5 +1,6 @@
 .background-image {
   --background: none;
+  --padding-bottom: calc(var(--app-footer-height, 64px) + 48px);
   background: url('/assets/images/images.jpg') no-repeat center center / cover;
   position: relative;
   min-height: 100vh;
@@ -80,7 +81,7 @@
   flex-direction: column;
 }
 
-.search-field label {
+.search-field .field-label {
   font-size: 12px;
   font-weight: 600;
   color: #6c757d;
@@ -119,7 +120,7 @@
 
 .annonces-section {
   background: rgba(255, 255, 255, 0.95);
-  padding: 40px 20px 60px;
+  padding: 40px 20px calc(var(--app-footer-height, 64px) + 120px);
   min-height: 50vh;
 }
 
