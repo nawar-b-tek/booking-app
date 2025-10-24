@@ -13,7 +13,8 @@ import { Capacitor } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Geolocation } from '@capacitor/geolocation';
 
-import { FirebaseService } from '../../services/firebase.service';
+import { FirebaseService, CreateAdPayload } from '../../services/firebase.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-post-ad',
@@ -32,6 +33,7 @@ export class PostAdPage {
     private fb: FormBuilder,
     private alertCtrl: AlertController,
     private actionSheetCtrl: ActionSheetController,
+    private authService: AuthService,
     private firebaseService: FirebaseService,
     private loadingCtrl: LoadingController
   ) {
@@ -39,8 +41,21 @@ export class PostAdPage {
       title: ['', Validators.required],
       phone: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(1)]],
+      currency: ['TND', Validators.required],
+      bedrooms: [0, [Validators.min(0)]],
+      bathrooms: [0, [Validators.min(0)]],
+      street: [''],
+      city: [''],
+      postalCode: [''],
+      country: [''],
+      contactEmail: [''],
       description: ['', [Validators.required, Validators.minLength(10)]],
     });
+
+    const currentUser = this.authService.getCurrentUserSnapshot();
+    if (currentUser?.email) {
+      this.adForm.patchValue({ contactEmail: currentUser.email });
+    }
   }
 
   async getCurrentLocation() {
@@ -157,15 +172,63 @@ export class PostAdPage {
     await loading.present();
 
     try {
-      const payload = {
-        title: this.adForm.value.title,
-        phone: this.adForm.value.phone,
-        price: Number(this.adForm.value.price),
-        latitude: this.latitude,
-        longitude: this.longitude,
-        description: this.adForm.value.description,
+      const currentUser = this.authService.getCurrentUserSnapshot();
+      if (!currentUser) {
+        throw new Error('USER_NOT_AUTHENTICATED');
+      }
+
+      const formValue = this.adForm.value;
+      const pricePerDay = Number(formValue.price);
+      const bedrooms =
+        formValue.bedrooms !== null && formValue.bedrooms !== undefined && formValue.bedrooms !== ''
+          ? Number(formValue.bedrooms)
+          : undefined;
+      const bathrooms =
+        formValue.bathrooms !== null &&
+        formValue.bathrooms !== undefined &&
+        formValue.bathrooms !== ''
+          ? Number(formValue.bathrooms)
+          : undefined;
+      const contactEmail = (formValue.contactEmail || currentUser.email || '').trim();
+      if (!contactEmail) {
+        throw new Error('MISSING_OWNER_EMAIL');
+      }
+
+      const addressFields = {
+        street: formValue.street?.trim(),
+        city: formValue.city?.trim(),
+        postal_code: formValue.postalCode?.trim(),
+        country: formValue.country?.trim(),
+      };
+      const hasAddress = Object.values(addressFields).some((value) => !!value);
+
+      const location =
+        this.latitude !== undefined && this.longitude !== undefined
+          ? { latitude: this.latitude, longitude: this.longitude }
+          : undefined;
+
+      const pricePerMonth = pricePerDay * 30;
+
+      const payload: CreateAdPayload = {
+        title: formValue.title,
+        description: formValue.description,
+        price: pricePerDay,
+        price_per_day: pricePerDay,
+        price_per_month: pricePerMonth,
+        currency: formValue.currency,
+        ...(bedrooms !== undefined ? { bedrooms } : {}),
+        ...(bathrooms !== undefined ? { bathrooms } : {}),
+        contact: {
+          phone: formValue.phone,
+          email: contactEmail,
+        },
+        ...(hasAddress ? { address: addressFields } : {}),
+        ...(location ? { location } : {}),
         photosDataUrl: this.photos,
-        userId: 'anon',
+        posterId: currentUser.uid,
+        user_id: contactEmail,
+        ownerEmail: contactEmail,
+        isBooked: false,
       };
 
       const result = await this.firebaseService.createAd(payload);
@@ -174,14 +237,37 @@ export class PostAdPage {
       this.resetForm();
     } catch (err) {
       console.error('Ad creation failed', err);
-      await this.presentAlert('Error', 'Unable to publish the ad. Please try again later.');
+      if (err instanceof Error && err.message === 'USER_NOT_AUTHENTICATED') {
+        await this.presentAlert('Authentication required', 'You must be logged in to post an ad.');
+      } else if (err instanceof Error && err.message === 'MISSING_OWNER_EMAIL') {
+        await this.presentAlert(
+          'Contact email required',
+          'Please provide a contact email so renters can reach you.'
+        );
+      } else {
+        await this.presentAlert('Error', 'Unable to publish the ad. Please try again later.');
+      }
     } finally {
       await loading.dismiss();
     }
   }
 
   private resetForm() {
-    this.adForm.reset();
+    const currentUser = this.authService.getCurrentUserSnapshot();
+    this.adForm.reset({
+      title: '',
+      phone: '',
+      price: '',
+      currency: 'TND',
+      bedrooms: 0,
+      bathrooms: 0,
+      street: '',
+      city: '',
+      postalCode: '',
+      country: '',
+      contactEmail: currentUser?.email || '',
+      description: '',
+    });
     this.photos = [];
     this.latitude = undefined;
     this.longitude = undefined;

@@ -1,5 +1,5 @@
 <ion-header translucent="true">
-  <ion-toolbar color="primary">
+  <ion-toolbar color="light">
     <ion-icon slot="start" name="megaphone-outline"></ion-icon>
     <ion-title>Post an Ad</ion-title>
   </ion-toolbar>
@@ -23,6 +23,15 @@
     </ion-item>
 
     <ion-item>
+      <ion-label position="stacked">Currency</ion-label>
+      <ion-select formControlName="currency" interface="popover">
+        <ion-select-option value="TND">TND</ion-select-option>
+        <ion-select-option value="EUR">EUR</ion-select-option>
+        <ion-select-option value="USD">USD</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
       <ion-label>Current location</ion-label>
       <ion-button slot="end" type="button" (click)="getCurrentLocation()">
         <ion-icon slot="start" name="locate-outline"></ion-icon>
@@ -35,12 +44,47 @@
     </ion-item>
 
     <ion-item>
+      <ion-label position="stacked">Bedrooms</ion-label>
+      <ion-input type="number" formControlName="bedrooms" min="0"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Bathrooms</ion-label>
+      <ion-input type="number" formControlName="bathrooms" min="0"></ion-input>
+    </ion-item>
+
+    <ion-item>
       <ion-label position="stacked">Description</ion-label>
       <ion-textarea
         formControlName="description"
         placeholder="Describe your property and key features"
         rows="5"
       ></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Street</ion-label>
+      <ion-input type="text" formControlName="street" placeholder="Street address"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">City</ion-label>
+      <ion-input type="text" formControlName="city"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Postal Code</ion-label>
+      <ion-input type="text" formControlName="postalCode"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Country</ion-label>
+      <ion-input type="text" formControlName="country"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contact email</ion-label>
+      <ion-input type="email" formControlName="contactEmail" placeholder="Shown to renters"></ion-input>
     </ion-item>
 
     <ion-item>

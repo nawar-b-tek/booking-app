@@ -11,7 +11,9 @@ type Annonce = {
   id?: string;
   title: string;
   description: string;
-  price_per_month: number;
+  price?: number;
+  price_per_day?: number;
+  price_per_month?: number;
   currency?: string;
   photos?: string[];
   user_id?: string; // owner email per provided sample
@@ -26,7 +28,7 @@ type Annonce = {
   bathrooms?: number;
   bedrooms?: number;
   contact?: { email?: string; phone?: string };
-  location?: any;
+  location?: { latitude?: number; longitude?: number; lat?: number; lng?: number };
 };
 
 @Component({
@@ -43,8 +45,9 @@ export class AnnonceDetailPage implements OnInit, OnDestroy {
 
   startDate: string | null = null; // ISO string
   endDate: string | null = null;   // ISO string
-  estimatedMonths = 0;
+  estimatedDays = 0;
   totalPrice = 0;
+  pricePerDay = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -95,21 +98,24 @@ export class AnnonceDetailPage implements OnInit, OnDestroy {
 
   private recalculate(): void {
     if (!this.annonce) return;
-    const price = this.annonce.price_per_month || 0;
-    const months = this.computeEstimatedMonths();
-    this.estimatedMonths = months;
-    this.totalPrice = months > 0 ? months * price : 0;
+    const pricePerDay =
+      this.annonce.price ??
+      this.annonce.price_per_day ??
+      (this.annonce.price_per_month ? this.annonce.price_per_month / 30 : 0);
+    const days = this.computeEstimatedDays();
+    this.pricePerDay = pricePerDay;
+    this.estimatedDays = days;
+    this.totalPrice = days > 0 ? days * pricePerDay : 0;
   }
 
-  private computeEstimatedMonths(): number {
+  private computeEstimatedDays(): number {
     if (!this.startDate || !this.endDate) return 0;
     const s = new Date(this.startDate);
     const e = new Date(this.endDate);
     if (isNaN(s.getTime()) || isNaN(e.getTime())) return 0;
     if (e <= s) return 0;
     const ms = e.getTime() - s.getTime();
-    const days = Math.ceil(ms / (1000 * 60 * 60 * 24));
-    return Math.max(1, Math.ceil(days / 30));
+    return Math.max(1, Math.ceil(ms / (1000 * 60 * 60 * 24)));
   }
 
   async requestReservation(): Promise<void> {
@@ -127,7 +133,7 @@ export class AnnonceDetailPage implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.annonce || !this.startDate || !this.endDate || this.estimatedMonths <= 0) {
+    if (!this.annonce || !this.startDate || !this.endDate || this.estimatedDays <= 0) {
       const t = await this.toastCtrl.create({ message: 'Veuillez choisir des dates valides', duration: 2000 });
       t.present();
       return;
@@ -142,6 +148,8 @@ export class AnnonceDetailPage implements OnInit, OnDestroy {
       const renterUid = user.uid;
       const ownerEmail = this.annonce.user_id || '';
 
+      const estimatedMonths = Math.max(1, Math.ceil(this.estimatedDays / 30));
+
       const reservation = {
         annonceId: this.annonce.id,
         annonceTitle: this.annonce.title,
@@ -150,7 +158,8 @@ export class AnnonceDetailPage implements OnInit, OnDestroy {
         renterUid,
         startDate: this.startDate,
         endDate: this.endDate,
-        estimatedMonths: this.estimatedMonths,
+        estimatedDays: this.estimatedDays,
+        estimatedMonths,
         currency: this.annonce.currency || 'TND',
         totalPrice: this.totalPrice,
         status: 'pending', // pending | approved | denied

@@ -8,7 +8,15 @@ export const firebaseConfig = {
   measurementId: "G-VECQBMWGML"
 };
 
+export const cloudinaryConfig = {
+  cloudName: 'dn8rkdgrv',
+  uploadPreset: 'my-ads',
+  apiKey: 'JDJ88-gxR2IIrm8QucqAsZMzmgM',
+  folder: 'ads'
+};
+
 export const environment = {
   production: false,
-  firebase: firebaseConfig
+  firebase: firebaseConfig,
+  cloudinary: cloudinaryConfig
 };

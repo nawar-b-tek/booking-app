@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule, Router } from '@angular/router';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, map, of, switchMap } from 'rxjs';
 import { AuthService, AppRole } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 type ToolbarRole = Exclude<AppRole, null>;
 
@@ -22,19 +23,26 @@ export class AppToolbarComponent {
     hasNotifications: boolean;
   } | null>;
 
-  constructor(private auth: AuthService, private router: Router) {
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private notifications: NotificationService
+  ) {
     this.user$ = combineLatest([this.auth.authState$, this.auth.role$]).pipe(
-      map(([fbUser, role]) => {
+      switchMap(([fbUser, role]) => {
         if (!fbUser) {
-          return null;
+          return of(null);
         }
 
-        return {
-          name: fbUser.displayName || (fbUser.email ? fbUser.email.split('@')[0] : 'User'),
-          email: fbUser.email || '',
-          role: (role ?? 'user') as ToolbarRole,
-          hasNotifications: false
-        };
+        const email = fbUser.email || '';
+        return this.notifications.observeUnreadCount(email).pipe(
+          map((count) => ({
+            name: fbUser.displayName || (email ? email.split('@')[0] : 'User'),
+            email,
+            role: (role ?? 'user') as ToolbarRole,
+            hasNotifications: count > 0,
+          }))
+        );
       })
     );
   }
@@ -44,8 +52,12 @@ export class AppToolbarComponent {
     await this.router.navigate(['/']);
   }
 
-  goToNotifications(): void {
-    this.router.navigate(['/notifications']);
+  async goToNotifications(): Promise<void> {
+    const current = this.auth.getCurrentUserSnapshot();
+    if (current?.email) {
+      await this.notifications.markAllAsRead(current.email);
+    }
+    this.router.navigate(['/reservations']);
   }
 
   goHome(): void {

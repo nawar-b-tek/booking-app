@@ -16,7 +16,8 @@ type Reservation = {
   renterUid?: string;
   startDate: string;
   endDate: string;
-  estimatedMonths: number;
+  estimatedMonths?: number;
+  estimatedDays?: number;
   totalPrice: number;
   currency?: string;
   status: 'pending' | 'approved' | 'denied';
